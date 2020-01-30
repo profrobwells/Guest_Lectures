@@ -3,21 +3,24 @@ title: "Basic Data Analysis: FBI Crime Data"
 output: html_document
 ---
 
-##For University of South Carolina
-##Feb. 3, 2020, Columbia, SC.
+## For University of South Carolina
+## Feb. 3, 2020, Columbia, SC
 
 <img src="Images/UARK Logo vert NEW copy.jpg" width="200" height="200" />    
 <br>  
+<br> 
 
-###Rob Wells, Ph.D., University of Arkansas, Fayetteville, AR    
+>
+
+### Rob Wells, Ph.D., University of Arkansas, Fayetteville, AR    
 
 <br>  
 
----
+>
 
-###**Today's Presentation**
+### **Today's Presentation**
 
-# <http://bit.do/XXXX>
+# <http://bit.do/SCdata>
 
 <br>
 --- 
@@ -29,7 +32,9 @@ Learning Outcome: Journalists will learn to build basic data visualizations and 
 
 <br>  
 
-##Download Tableau Public
+>  
+
+## Download Tableau Public
 
 > [Tableau Download: "CNTL" + click for a New Tab](https://public.tableau.com/en-us/s/){target="_blank"}
 
@@ -41,9 +46,10 @@ Also, you will need to create a Tableau Public account.
 
 
 <br>
----
 
-##Storytelling with FBI Crime Data  
+>
+
+## Storytelling with FBI Crime Data  
 
 This section will analyze the storytelling possibilities with the FBI Uniform Crime Reporting Data.   
 
@@ -93,12 +99,13 @@ Economic conditions, including median income, poverty level, and job availabilit
 <br>
 <br>  
 
+>
 
-##Step 1: Retrieve the Data 
+## Step 1: Retrieve the Data 
 <br>
 <br> 
 
-Table 8: Offenses Known to Law Enforcement by City, 2017
+Table 8: Offenses Known to Law Enforcement by City, 2018
 > [Table 8 - FBI Crime Data](https://ucr.fbi.gov/crime-in-the-u.s/2018/crime-in-the-u.s.-2018/tables/table-8/table-8-state-cuts/south-carolina.xls){target="_blank"}
 
 >
@@ -118,16 +125,20 @@ Walk through the tables:
 Property Crime totals: Burglary, Larceny-theft, Motor vehicle theft, Arson.  
 <br>  
 <br> 
-####Data limitations - weirdness 
+
+>
+
+#### Data limitations - Weirdness 
 
 > You may see a notation (1) in Rape. In 2013, the term “forcible” was removed from the offense name, and the definition was changed FBI discontinuing reporting of rape data using the UCR legacy definition beginning in 2017.
 
 > [Details are in Data Declaration: "CNTL" + click for a New Tab](https://ucr.fbi.gov/crime-in-the-u.s/2018/crime-in-the-u.s.-2018/tables/table-8/table-8-data-declaration){target="_blank"}
 
+>
 
-####Data Cleaning     
+#### Data Cleaning     
 
-> The Google sheet, the FBI17 tab, has been cleaned and modified so it will play well with Tableau. Basically, the FBI spreadsheet was cleaned to remove the first four rows so Tableau will recognize the column headings ("Locality, Population, Violent Crime, etc"). 
+> The Google sheet, the FBI18 tab, has been cleaned and modified so it will play well with Tableau. Basically, the FBI spreadsheet was cleaned to remove the first four rows so Tableau will recognize the column headings ("Locality, Population, Violent Crime, etc"). 
 
 > Here is a 10-minute video on how to do basic data cleaning, using another data set, but the principles apply. You can watch it later and amaze your friends:
 
@@ -142,7 +153,7 @@ Property Crime totals: Burglary, Larceny-theft, Motor vehicle theft, Arson.
 <br>  
 
 
-##Step 2: Basic Interactive Chart
+## Step 2: Basic Interactive Chart
 
 For this part, we will use Tableau Public to produce charts and a map. Download the app if you haven't already  
 
@@ -152,7 +163,7 @@ For this part, we will use Tableau Public to produce charts and a map. Download 
 
 > You will need to create a Tableau Public account.    
 
-####Launch the App      
+#### Launch the App      
 
 Tableau accepts many data sources. Under "To a Server" there's an option for Google Sheets. It will ask for access to your Google account and say ok.
 
@@ -214,8 +225,8 @@ Download the FBI data to your computer as an Excel file, and then load it into T
 > Filter to South Carolina cities   
 
     + To filter, drag Population (in Measures, left column) to Filters
-    + Select All Values, Minimum Value at XXXXX23,456
-    + The XXXXX23,456 will filter out the 20 largest South Carolina cities.
+    + Select All Values, Minimum Value at 22,578
+    + The 22,578 will filter out the 20 largest South Carolina cities.
   
 
 <br>  
@@ -229,18 +240,19 @@ Download the FBI data to your computer as an Excel file, and then load it into T
     + Adjust filter as you wish
 <br>  
 
+>
 
-####Per capita crime calculation
-* Crime per 1,000 residents
+#### Per capita crime calculation
+> * Crime per 1,000 residents
 
-    + Click Sheet 2
-    + Click on "Violent Crime" - select down arrow, see menu, select Create | Calculated Field
-    + You will create this calculation:  [Violent Crime] / [Population] *1000
-    + Dialog Box Displays [Violent Crime]
-    + Add a division operator: [Violent Crime] / 
-    + Drag Population to complete the equation:  [Violent Crime] / [Population]
-    + Type *1000
-    + Rename it Violent Per 1000, click OK
+>   1) Click Sheet 2
+    2) Click on "Violent Crime" - select down arrow, see menu, select Create | Calculated Field
+    3) You will create this calculation:  [Violent Crime] / [Population] *1000
+    4) Dialog Box Displays [Violent Crime]
+    5) Add a division operator: [Violent Crime] / 
+    6) Drag Population to complete the equation:  [Violent Crime] / [Population]
+    7) Type *1000
+    8) Rename it Violent Per 1000, click OK
     
 <br>  
 ![ ](Images/Tableau8.png)    
@@ -255,9 +267,9 @@ Download the FBI data to your computer as an Excel file, and then load it into T
   8) Make a headline
       
       + Double Click on the heading, "Sheet 2" and type in a headline. 
-      + I typed "Brinkley Has Highest Per Capita Crime Rate In Arkansas
-      + Source: FBI Uniform Crime Report Data, 2017. 
-      + https://ucr.fbi.gov/crime-in-the-u.s/2018/crime-in-the-u.s.-2018/tables/table-8/table-8-state-cuts/south-carolina.xls" 
+      + Estill Has Highest Per Capita Crime Rate In SC
+      + Violent Crime Per 1,000. Source: FBI Uniform Crime Report Data, 2018.
+      + https://ucr.fbi.gov/crime-in-the-u.s/2018/crime-in-the-u.s.-2018/tables/table-8/table-8-state-cuts/south-carolina.xls
       + Use the formatting tools to adjust fonts and center. 
 
 
@@ -278,9 +290,10 @@ Download the FBI data to your computer as an Excel file, and then load it into T
     + Rename the tab "Sheet 1" to "Arkansas Crime"
 
 <br>  
----  
 
-##Step 3: Basic Map
+>   
+
+## Step 3: Basic Map
 
 > We'll use the same data for a map.  
 > First, we have to apply a geographic role to the Dimension "Locality." This associates the city with geocoding so it can be applied to a map.   
@@ -295,42 +308,54 @@ Download the FBI data to your computer as an Excel file, and then load it into T
 
 Notice in Measures that Latitude and Longitude measures are now created. 
 
-##Follow These Steps:   
+>
+
+## Follow These Steps:   
 
 > + Click on "new worksheet" tab at lower left. It creates a new Sheet.    
   + Drag Longitude to Columns, Latitude to Rows    
-  + Drag "Locality" to the sheet. An Arkansas map appears with blue dots.  
+  + Drag "Locality" to the sheet. An South Carolina map appears with blue dots.  
+  
+<br>  
+
+![ ](Images/SCmap.png)
+
+>
+
+#### Data Cleaning!    
+>  + Note lower right hand corner: "84 unknown." To fix this, we need to tell Tableau these cities are in South Carolina
+  + In top menu, select Map | Edit Locations
+  + In state, select Fixed | South Carolina
+  + FYI: Three others remain: Springdale, St. Stephen, Forest Acres. Long story on fixing those - involved editing latitude and longitude coordinates: Springdale: 33.960952, -81.109895    
   
 <br>   
 
-####Data Cleaning!    
->  + Note lower right hand corner: "110 unknown." To fix this, we need to tell Tableau these cities are in Arkansas
-  + In top menu, select Map | Edit Locations
-  + In state, select Fixed | Arkansas (four others remain: Helena-West Helena, Concord, Highland and Johnson. Type in West Helena for Helena-West Helena. Logn story on fixing those - involved editing latitude and longitude coordinates)    
-  
-<br>   
-  
-####Back to Map Building!   
+>
+
+#### Back to Map Building!   
 > + Drag Violent per 1000 onto the map. Different sized dots appear
   + Drag Violent per 1000 onto Color. Edit colors to Red-Green Diverging. Reverse the scale
   + Click on size in Marks, adjust slider to enlarge the circles   
   
 <br>    
 
-####Headline          
+>
+
+#### Headline          
 >   + Double Click on the heading, "Sheet 2" and type in a headline. 
-    + I typed "Arkansas Crime, 2017
-    + Source: FBI Uniform Crime Report Data, 2017. 
-    + https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/tables/table-8/table-8-state-cuts/arkansas.xls" 
+    + I typed "South Carolina Crime, 2018
+    + Source: FBI Uniform Crime Report Data, 2018. 
+    + https://ucr.fbi.gov/crime-in-the-u.s/2018/crime-in-the-u.s.-2018/tables/table-8/table-8-state-cuts/south-carolina.xls
     + Use the formatting tools to adjust fonts and center.  
   
-<br>   
+>
 
-####Tweaking and Cleaning    
+#### Tweaking and Cleaning    
+
 > + Remove Right Legend: Down arrow |Hide Card
   + Drag color legend to x-axis, drag up top border to resize
 
-![Finished Product!](Images/Map.png)
+![Finished Product!](Images/SCmap2.png)
   
  
 <br>
