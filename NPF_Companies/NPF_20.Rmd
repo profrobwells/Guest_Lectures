@@ -1,7 +1,5 @@
 ---
 title: "Making the most of SEC Filings"
-author: "Rob Wells, Ph.D., University of Arkansas"
-date: "7/14/20202"
 output:  
   html_document:
       toc: true
@@ -11,20 +9,13 @@ output:
 
 
 ## Tracking Coronavirus Relief Funds Workshop    
-### National Press Foundation      
-
-<br> 
-
+<br>  
 <img src="Images/NPF logo.jpeg" width="200" height="200" />    
 <br>  
-<br>  
-
----
-
 
 **Today's Presentation** 
 
-**<http://bit.do/12345>**
+**<http://bit.do/companies_PPP>**
 
 <br>
 
@@ -38,18 +29,15 @@ output:
 <br>
    
 
-<img src="Images/UARK2.jpg" width="1200" height="300" />
+<img src="Images/UARK2.jpg" width="1000" height="200" />
 
 <br>
-<br>
---- 
+
 
 **This 45-minute hands-on session will show journalists how to navigate Securities and Exchange Commission filings and conduct basic background research on corporations.** 
 <br>
 <br>
 Learning Outcome: Journalists will learn how to retrieve details on revenues, contracts, employment and business ownership. 
-
-<br>
 ---
 
 ## Corporate Research Overview   
