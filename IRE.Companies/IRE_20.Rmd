@@ -10,12 +10,12 @@ output:
 
 ## Follow the Covid-19 Money: Company Research Strategies     
 <br>  
-<img src="Images/IRE.png" width="200" height="200" />    
+<img src="Images/IRE.png" width="300" height="500" />    
 <br>  
 
 **Today's Presentation** 
 
-**<http://bit.do/12345>**
+**<http://bit.do/covid_companies>**
 
 <br>
 
