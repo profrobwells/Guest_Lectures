@@ -29,7 +29,7 @@ output:
 <br>
    
 
-<img src="Images/UARK2.jpg" width="1000" height="200" />
+<img src="Images/UARK2.jpg" width="800" height="100" />
 
 <br>
 
@@ -54,7 +54,7 @@ more than half of the country’s output.
 
 
 > This SBA list will primarily have private companies
-> [Speadsheet with PPP Recipients $150k and Above](https://sba.app.box.com/s/wz72fqag1nd99kj3t9xlq49deoop6gzf){target="_blank"}
+> [Speadsheet with PPP Recipients $150k and Above - Aug. 8 update](https://sba.app.box.com/s/ox4mwmvli4ndbp14401xr411m8sefx3i){target="_blank"}
 
 
 
@@ -91,7 +91,7 @@ Every publicly traded company files annual reports, proxy statements, and period
   + DateApproved: 4/8/20    
   + Lender: Relyance Bank, National Association    
   + Details from:       
-> [PPP Recipients $150k and Above](https://sba.app.box.com/s/wz72fqag1nd99kj3t9xlq49deoop6gzf){target="_blank"}
+> [PPP Recipients $150k and Above, Aug. 8 update](https://sba.app.box.com/s/ox4mwmvli4ndbp14401xr411m8sefx3i){target="_blank"}
 
 
 <img src="Images/Inuvo.png" width="1200" height="300" />
@@ -178,7 +178,7 @@ Every publicly traded company files annual reports, proxy statements, and period
   + [Customized Edgar Search: "CNTL" + click for a New Tab](http://www.sec.gov/cgi-bin/srch-edgar){target="_blank"}        
   + This provided a list of all current public companies in Arkansas     
   + Pulled up SBA list, sorted by Arkansas, loans of $1 million or more    
-  + [PPP Recipients $150k and Above](https://sba.app.box.com/s/wz72fqag1nd99kj3t9xlq49deoop6gzf){target="_blank"}       
+  + [PPP Recipients $150k and Above, Aug. 8 update](https://sba.app.box.com/s/ox4mwmvli4ndbp14401xr411m8sefx3i){target="_blank"}       
   + Yes, there probably is a better way, but that's what I did.
 
 <br>  
@@ -298,7 +298,7 @@ NYT Markets – Business News Portal
 <http://www.nytimes.com/ref/business/business-navigator.html>
 
 Census Bureau County Business Patterns Database  
-<http://www.census.gov/econ/cbp/>   
+<https://www.census.gov/programs-surveys/cbp.html>   
 
 Footnoted   
 A website that tracks SEC filings and highlights buried nuggets of corporate news.  
@@ -339,8 +339,7 @@ Search Engines for People, Businesses
   <https://nuwber.com/>   
   Pipl    
   <http://www.pipl.com/>    
-  John Doe    
-  <http://www.reporter.org/desktop/tips/johndoe.htm>     
+
    
 Investigative Reporters and Editors (IRE)   
 The Investigative Reporters and Editors site provides a deep archive of data and story tip sheets that can save hours of time as you refine your reporting.   
