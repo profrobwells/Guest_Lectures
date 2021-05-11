@@ -10,12 +10,12 @@ output:
 
 ## 2021 National Press Foundation Corporate Accountability Seminar   
 <br>  
-<img src="Images/NPF logo.jpeg" width="200" height="200" />    
+<img src="Images/NPF logo.jpeg" width="250" height="200" />    
 <br>  
 
 **Today's Presentation** 
 
-**<http://bit.do/companies_PPP>**
+**<http://bit.do/npf_sec>**
 
 <br>
 
@@ -29,7 +29,7 @@ output:
 <br>
    
 
-<img src="Images/UARK2.jpg" width="1000" height="200" />
+<img src="Images/UARK2.jpg" width="700" height="150" />
 
 <br>
 
