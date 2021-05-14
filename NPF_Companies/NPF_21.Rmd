@@ -1,5 +1,5 @@
 ---
-title: "Making the most of SEC Filings"
+title: "Introduction to Business Journalism Research"
 output:  
   html_document:
       toc: true
@@ -10,7 +10,7 @@ output:
 
 ## 2021 National Press Foundation Corporate Accountability Seminar   
 <br>  
-<img src="Images/NPF logo.jpeg" width="250" height="200" />    
+<img src="Images/NPF logo.jpeg" width="175" height="100" />    
 <br>  
 
 **Today's Presentation** 
@@ -29,7 +29,7 @@ output:
 <br>
    
 
-<img src="Images/UARK2.jpg" width="700" height="150" />
+<img src="Images/UARK2.jpg" width="300" height="50" />
 
 <br>
 
@@ -54,7 +54,7 @@ more than half of the country’s output.
 
 
 > This SBA list will primarily have private companies
-> [Speadsheet with PPP Recipients $150k and Above](https://sba.app.box.com/s/wz72fqag1nd99kj3t9xlq49deoop6gzf){target="_blank"}
+> [Speadsheet with PPP Recipients $150k and Above](https://data.sba.gov/dataset/8aa276e2-6cab-4f86-aca4-a7dde42adf24/resource/6b62a44b-69ec-436a-9b95-0ea550475543/download/public_150k_plus.csv){target="_blank"}
 
 
 
@@ -66,7 +66,7 @@ SEC History: Depression-era agency to police stock market. Required system of in
 Every publicly traded company files annual reports, proxy statements, and periodic disclosures about their finances and major business developments.
 
 
-<img src="Images/SEC.png" width="1200" height="300" />
+<img src="Images/SEC.png" width="600" height="100" />
 
 >SEC Edgar Database of Corporate Filings  
 --"Electronic Data Gathering, Analysis, and Retrieval"  
@@ -91,7 +91,7 @@ Every publicly traded company files annual reports, proxy statements, and period
   + DateApproved: 4/8/20    
   + Lender: Relyance Bank, National Association    
   + Details from:       
-> [PPP Recipients $150k and Above](https://sba.app.box.com/s/wz72fqag1nd99kj3t9xlq49deoop6gzf){target="_blank"}
+> [PPP Recipients $150k and Above](https://data.sba.gov/dataset/8aa276e2-6cab-4f86-aca4-a7dde42adf24/resource/6b62a44b-69ec-436a-9b95-0ea550475543/download/public_150k_plus.csv){target="_blank"}
 
 
 <img src="Images/Inuvo.png" width="1200" height="300" />
@@ -115,7 +115,7 @@ Every publicly traded company files annual reports, proxy statements, and period
 > **Building the Story. Key Facts From Inuvo 10-K**:         
 + Inuvo is a technology company that develops and sells information technology solutions for marketing.   
 + Long-standing relationships with Yahoo!, Google and Microsoft Online     
-+ April 30, 2020: 64 full-time employees      
++ Jan. 31, 2021: 71 full-time employees      
 + Web site address is www.inuvo.com     
 + "The COVID-19 pandemic could have a material adverse impact on our business, results of operations and financial condition."    
 
@@ -123,10 +123,9 @@ Every publicly traded company files annual reports, proxy statements, and period
   1) *"material adverse impact" is a major warning of a significant business risk.*
 
 >**More from Inuvo 10-K**     
-  + "Beginning in late April 2020, we experienced a significant reduction in demand (marketing budgets) within the ValidClick business."      
-  + "We would expect to see less advertising demand from the travel, leisure and hospitality verticals."      
-  + "Our auditors have raised substantial doubts as to our ability to continue as a going concern... We have sustained recurring losses from operations and have a net capital deficiency."     
-  + Reliant upon Yahoo! and Google for most of our revenue. During 2019 they accounted for 64.4%, and 14.1% of our revenues, respectively.      
+  + "Beginning in late April 2020, we experienced a significant reduction in demand (marketing budgets) within the ValidClick platform and a modest decline in demand within the IntentKey platform, the combination of which has resulted in a significant reduction in our revenue run rate."      
+  + "We experienced less advertising demand from the travel, leisure and hospitality verticals."      
+  + Reliant upon Yahoo! and Google for most of our revenue. During 2020 they accounted for 33.3%, and 27.2% of our revenues, respectively. In 2019, Yahoo! and Google accounted for 64.4% and 14.1% of our revenues, respectively.       
   
 **More Red Flags**    
   1) *auditors warning about "ability to continue as a going concern" is a major warning about future survival*   
@@ -136,20 +135,23 @@ Every publicly traded company files annual reports, proxy statements, and period
 >**And Still More from Inuvo 10-K **   
   + March 12, 2020: Hitachi provided $5,000,000 line of credit commitment.          
   + April 2020, obtained unsecured Paycheck Protection Program loan... of $1.1 million which we are using primarily for payroll costs.   
-  + Our net working capital was negative $7.5 million as of December 31, 2019. During March 2020 and April 2020 we raised approximately $1.5 million of working capital through the sale of our securities and in April 2020 we obtained the PPP Loan of $1.1 million.   
-  + For the year ended December 31, 2019, we reported a net loss of $4,488,107 and net cash used in operating activities of $5,338,383.   
+  + For the year ended December 31, 2020, net loss $7.3 million versus a net loss of $4.5 million in year earlier.   
 
-**More Red Flags**    
+**Red Flags & High Points**    
   1) *Right before the pandemic blew up, company went heavily in debt: $5 million loan*   
   2) *Scrambling to raise money: sold $1.5 million in stock in March-April*     
-  3) *Inuvo lost $4.5 million in 2019*  
+  3) *Inuvo lost $7.3 million in 2019*
+  4) *Managed to avoid nosedive: Prior Year's 10-K said "Our auditors have raised substantial doubts as to our ability to continue as a going concern... We have sustained recurring losses from operations and have a net capital deficiency."*
+  5) *Improved their capital cushion, expanded workforce, paid off PPP loan.*
   
 
 > **Takeaways**:   
-  + Small company struggling to stay in business.  
-  + Rising Debt Load: Net Interest Expense   
-  + Expenses Rising    
-  + How did a struggling small company get a PPP loan?  
+  + Small company fighting successfully to stay in business
+  + Raised nearly $31 million through securities sales
+  + Paid off PPP loan
+  + Debt Load Shrinking: Net Interest Expense Declining 
+  + Expense Declining    
+ 
   
 ### Special Edgar Tricks: Search for Your State, Zip Code     
 > [Customized Edgar Search: "CNTL" + click for a New Tab](http://www.sec.gov/cgi-bin/srch-edgar){target="_blank"}    
@@ -178,7 +180,7 @@ Every publicly traded company files annual reports, proxy statements, and period
   + [Customized Edgar Search: "CNTL" + click for a New Tab](http://www.sec.gov/cgi-bin/srch-edgar){target="_blank"}        
   + This provided a list of all current public companies in Arkansas     
   + Pulled up SBA list, sorted by Arkansas, loans of $1 million or more    
-  + [PPP Recipients $150k and Above](https://sba.app.box.com/s/wz72fqag1nd99kj3t9xlq49deoop6gzf){target="_blank"}       
+  + [PPP Recipients $150k and Above](https://data.sba.gov/dataset/8aa276e2-6cab-4f86-aca4-a7dde42adf24/resource/6b62a44b-69ec-436a-9b95-0ea550475543/download/public_150k_plus.csv){target="_blank"}       
   + Yes, there probably is a better way, but that's what I did.
 
 <br>  
@@ -214,7 +216,7 @@ More detailed presentation
     + Test: "Penguin Ed's"  - great barbecue place.    
 > [Search DNB database: "CNTL" + click for a New Tab](http://www.dnb.com/){target="_blank"}    
 
-<img src="Images/Penguin.png" width="400" height="400" />    
+<img src="Images/Penguin.png" width="400" height="200" />    
   
 >**Other Business Search Resources:**   
     [For international company searches: "CNTL" + click for a New Tab](https://corporateinformation.com/Country-Industry-Research-Links.aspx){target="_blank"}   
@@ -270,9 +272,13 @@ More detailed presentation
 
   > The PPP data has NAICS codes which allow you to examine how money flows into a particular industry in your community.
   > Drill down by industry group:
-  > [Search North American Industry Classification System (NAICS) "CNTL" + click for a New Tab](http://www.census.gov/eos/www/naics/){target="_blank"}
+  > [Search North American Industry Classification System (NAICS) "CNTL" + click for a New Tab](https://www.census.gov/naics/){target="_blank"}
   > NAICS is federal standard for classifying businesses, organizing U.S. economic data
-  
+
+### Investigative Reporting on Businesses    
+
+  > [Reynolds Center Introduction to Investigating Businesses "CNTL" + click for a New Tab](https://businessjournalism.org/2020/07/investigative-reporting-on-business/){target="_blank"}
+
 
 ## Resources
 
@@ -298,7 +304,7 @@ NYT Markets – Business News Portal
 <http://www.nytimes.com/ref/business/business-navigator.html>
 
 Census Bureau County Business Patterns Database  
-<http://www.census.gov/econ/cbp/>   
+<https://www.census.gov/programs-surveys/cbp.html>   
 
 Footnoted   
 A website that tracks SEC filings and highlights buried nuggets of corporate news.  
@@ -318,7 +324,7 @@ See if a stock broker or Wall Street firm has been slapped with a regulatory pen
 
 North American Securities Administrators Association  
 A portal for securities regulators for all 50 states. Some state regulators are quite aggressive and unearth frauds well ahead of the SEC. Worth making contact with your state’s regulator.  
-<http://www.nasaa.org/regulatory-activity/enforcement-legal-activity/enforcement-directory/> 
+<https://www.nasaa.org/contact-your-regulator/> 
 
 Public Access to Court Electronic Records (PACER)   
 This is the go-to website for federal court filings. It charges a small fee but it allows you to read tens of thousands of civil, criminal, bankruptcy and appellate court filings.  
@@ -337,10 +343,9 @@ Search Engines for People, Businesses
   A variety of websites for finding U.S. people, addresses, phone numbers and other relevant information. Pro tip: first run a search on yourself to test the accuracy of these websites.   
   Nuwber     
   <https://nuwber.com/>   
-  Pipl    
+  Pipl - $300 per year subscription  
   <http://www.pipl.com/>    
-  John Doe    
-  <http://www.reporter.org/desktop/tips/johndoe.htm>     
+
    
 Investigative Reporters and Editors (IRE)   
 The Investigative Reporters and Editors site provides a deep archive of data and story tip sheets that can save hours of time as you refine your reporting.   
@@ -371,8 +376,7 @@ This site unearths critical information about corporate welfare, employment disc
 >**Questions?**   
   + Rob Wells: rswells@uark.edu or @rwells1961  
 
-   
-<img src="Images/UARK2.jpg" width="1200" height="200" />
 
+<img src="Images/UARK2.jpg" width="300" height="50" />
 
 ### --30-- 
