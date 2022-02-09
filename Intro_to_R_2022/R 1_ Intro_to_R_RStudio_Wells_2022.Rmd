@@ -322,12 +322,10 @@ Questions:
     How to obtain summary statistics (summary)   
     How to build basic tables from a dataset   
     How to conduct filter queries from a dataset   
-
-<br>
+<br>   
 
 # Appendix   
 
-<br>
 <br>
 
 #### Install R and R Studio
