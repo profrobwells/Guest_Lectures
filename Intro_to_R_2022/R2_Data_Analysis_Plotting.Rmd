@@ -49,6 +49,8 @@ https://data.sfgov.org/Public-Safety/Police-Department-Calls-for-Service/hz9m-tj
 # Part 1: Load Software, Interview Data
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+#background on tidyverse: https://www.tidyverse.org/packages/
+
 library(tidyverse)
 library(janitor)
 library(lubridate)

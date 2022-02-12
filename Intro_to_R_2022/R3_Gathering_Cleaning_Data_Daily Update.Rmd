@@ -45,24 +45,15 @@ APIs - basics
 
 -- **Software: jsonlite**
 ```{r include=FALSE}
-# install.packages("slider")
-# install.packages("zoo")
-# install.packages("gtools")
-# install.packages("kableExtra")
+#background on tidyverse: https://www.tidyverse.org/packages/
 # install.packages("formattable")
 #install.packages("janitor")
 #install.packages("tidyverse")
-#install.packages("reshape2")
+#install.packages("jsonlite")
 library(tidyverse)
 library(janitor)
 library(lubridate)
 library(jsonlite)
-# library(gtools)
-# library(zoo)  
-# library(reshape2)
-# library(slider)
-# library(formattable)
-
 ```
 
 ```{r}
