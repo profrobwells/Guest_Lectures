@@ -1,0 +1,366 @@
+---
+output: 
+  html_document:
+      toc: true
+      toc_float: true
+      toc_depth: 4
+---
+# R2: Analysis, Gathering and Cleaning Data- 2022   
+
+<br>    
+
+**NICAR 2022: Atlanta, Georgia**   
+ver. 2/12/2022
+
+    Rob Wells, Ph.D.
+    Philip Merrill College of Journalism
+    University of Maryland
+    robwells@umd.edu
+    LinkedIn: https://www.linkedin.com/in/rob-wells-7929329/ 
+    
+<br> 
+
+<img src="images/merrill-logo-dark.png" width="300" height="50" />
+<br>   
+<br> 
+
+**Goals:**
+    
+    Use the tidyverse packages dplyr and ggplot2   
+    Sort, filter, group, summarize, join, and visualize   
+    Identify trends in your data.   
+
+ 
+**Analysis of San Francisco Police Calls for Service Data**  
+
+- **Here is the original dataset: 3,048,797 records**  
+
+https://data.sfgov.org/Public-Safety/Police-Department-Calls-for-Service/hz9m-tj6z/data
+
+- **This tutorial uses a subset of this data** 
+
+    The Calls for Service were filtered as follows: 
+    CONTAINS homeless, 915, 919, 920: Downloaded 157,237 records 3/31/16 to 11/30/2019. 
+    This is 5.1% of all calls in the broader database.
+    File renamed to: SF_311_Jan29.xlsx   
+   
+
+
+# Part 1: Load Software, Interview Data
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(janitor)
+library(lubridate)
+```
+
+
+
+Load Data
+```{r}
+#At Home: See Appendix to load data at home from Internet
+
+SF <- rio::import("SF_311_Jan29.xlsx", which = "SF Police_Department_Calls_for_") 
+```
+
+-- **Interview the Data**
+```{r}
+head(SF)
+#view(SF)
+```
+
+-- **Really Interview the Data**
+How big are you? Rows? Columns? List of column names? 
+
+```{r}
+nrow(SF)
+```
+
+```{r}
+ncol(SF)
+```
+
+```{r}
+glimpse(SF)
+```
+
+- **Clean column names, Process dates** 
+```{r}
+SF <- janitor::clean_names(SF)
+#Process dates
+SF$call_date2 <- ymd(SF$call_date)
+SF$year <- year(SF$call_date2)
+```
+
+-- **Sort by Date**
+```{r}
+#descending order
+SF1 <- SF %>% arrange(desc(report_date))
+head(SF1)
+```
+
+```{r}
+#ascending order
+SF1 <- SF %>% arrange(report_date)
+head(SF1)
+```
+
+- **311 Calls by Year**
+```{r}
+Years <- SF %>% 
+  count(year) %>% 
+  group_by(year) %>% 
+  arrange(desc(year))
+head(Years)
+```
+
+## Basic ggplot
+
+-- **ggplot to the rescue**
+
+```{r}
+ggplot(data=Years) +
+  geom_col(mapping=aes(x=year, y=n)) 
+
+```
+
+-- **Add some color: fill**
+
+```{r}
+ggplot(data=Years) +
+  geom_col(mapping=aes(x=year, y=n, fill=n)) 
+
+```
+
+-- **Ditch the legend**
+```{r}
+
+ggplot(Years,aes(x = year, y = n,
+             fill = n)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none")
+
+```
+
+-- **Headlines, Annotations and Credits**
+```{r}
+
+ggplot(Years,aes(x = year, y = n,
+             fill = n)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none") +
+#This is your title sequence
+  labs(title = "311 Calls for Service By Day, San Francisco",
+       subtitle = "SF PD Service Call Data, 2016-2019",
+       caption = "Graphic by Rob Wells, 2-12-2022",
+       y="Number of Calls",
+       x="Year")
+```
+
+
+```{r}
+#Adapting code from above...
+SF %>% 
+   count(year) %>% 
+   group_by(year) %>% 
+#Sandwich it onto a simple ggplot
+  ggplot(aes(x = year, y = n, fill = n)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none") +
+  labs(title = "311 Calls for Service By Year, San Francisco", 
+       subtitle = "SF PD Service Call Data, 2016-2019",
+       caption = "Graphic by Wells",
+       y="Number of Calls",
+       x="Year")
+```
+
+
+- **311 Calls per Day**
+Using count to tabulate and group the calls by day
+```{r}
+Days <- SF %>% 
+  count(call_date2) %>% 
+  group_by(call_date2) %>% 
+  arrange(desc(n))
+head(Days)
+```
+
+-- **Quick Plot, Calls by Year**
+
+
+```{r}
+#Adapting code from above...
+SF %>% 
+  count(call_date2) %>% 
+  group_by(call_date2) %>% 
+#Sandwich it onto a simple ggplot
+  ggplot(aes(x = call_date2, y = n, fill = n)) +
+  geom_bar(stat = "identity") +
+  labs(title = "311 Calls for Service By Day, San Francisco", 
+       subtitle = "SF PD Service Call Data, 2016-2019",
+       caption = "Graphic by Wells",
+       y="Number of Calls",
+       x="Day")
+```
+
+- **Interviewing: Types of Crimes**
+```{r}
+SF1 <- SF %>% count(original_crime_type_name) %>% 
+  group_by(original_crime_type_name) %>% 
+  arrange(desc(n))
+head(SF1)
+#view(SF1)
+```
+
+
+- **Interviewing: Actions Taken**
+```{r}
+Action <- SF %>% 
+  count(disposition) %>% 
+  arrange(desc(n))
+head(Action)
+#view(Action)
+```
+# Part 2: Analysis
+
+
+- **Summary**: Using the summary() function, describe the minimum, maximum, median and mean of calls in the Days table
+```{r}
+summary(Days)
+```
+
+Between March 31, 2016 and Nov. 30, 2019, San Francisco residents placed **an average 117 calls** to police complaining about homeless people.
+
+- **Question**: Identify the day with the most calls? The day had the least?
+```{r}
+Days %>% 
+  filter(n == 232)
+```
+
+```{r}
+Days %>% 
+  filter(n == 10)
+```
+
+-- **Tabulate types of events**
+
+```{r}
+Types <- SF %>% count(original_crime_type_name) %>% 
+  group_by(original_crime_type_name) 
+head(Types)
+
+#View(Types)
+```
+
+-- **Question**: What are the top five complaints in this data and provide the number of complaints
+
+```{r}
+#Start with same code as above
+Types <- SF %>% count(original_crime_type_name) %>% 
+  group_by(original_crime_type_name) %>% 
+#Add this line to sort in descending order
+  arrange(desc(n))
+head(Types)
+```
+
+-- **Top 5**   
+Create separate table with just the top five counties' crime rate: "top_n" function 
+```{r}
+SF %>% 
+  count(original_crime_type_name) %>% 
+  top_n(5, n) %>% 
+  arrange(desc(n))
+```
+-- **Export to spreadsheet**
+```{r}
+write.csv(Days,"Days.csv")
+```
+
+# Part 3: Visualization
+
+- **Question**: What were the common days for arrests?
+
+- **Task: Tabulate complaints by day of the week**  
+
+https://github.com/profrobwells/Data-Analysis-Class-Jour-405v-5003/blob/master/Readings/dealing-with-dates.pdf
+
+```{r}
+SF <- SF %>% 
+  mutate(weekday = wday(call_date, label=TRUE, abbr=FALSE))
+```
+
+```{r}
+SF %>%
+  select(weekday, crime_id, disposition) %>%
+  filter(grepl("ARR", disposition)) %>%
+  count(weekday) 
+```
+
+Make an ugly bubble chart
+```{r}
+  #using the code above
+SF %>%
+  select(weekday, crime_id, disposition) %>%
+  filter(grepl("ARR", disposition)) %>%
+  count(weekday) %>%
+  
+#and sandwich onto a graphic
+  ggplot(aes(x = weekday, y = n)) +
+  geom_point(aes(size = n, color = n))
+```
+
+
+-- **Clean up bubble chart**
+
+    We add y-axis label, headline & ditch the legend
+
+```{r}
+  #using the code above
+SF %>%
+  select(weekday, crime_id, disposition) %>%
+  filter(grepl("ARR", disposition)) %>%
+  count(weekday) %>%
+#and sandwiching onto a graphic
+  ggplot(aes(x = weekday, y = n)) +
+  ylab("Arrests") +
+  geom_point(aes(size = n, color = n), alpha = 0.7, show.legend = FALSE) +
+  labs(title = "Homeless Arrests By Weekday in San Francisco",
+       subtitle = "SF PD Service Call Data 2017-2019: Source: SFPD",
+       caption = "Graphic by Wells")
+```
+
+-- **Pretty Bubble Chart**
+
+    Scaled y axis: scale_y_continuous
+    Bumped up bubble size: scale_size_area
+    saved chart to object: bubble
+
+```{r}
+  #using the code above
+bubble <- SF %>%
+  select(weekday, crime_id, disposition) %>%
+  filter(grepl("ARR", disposition)) %>%
+  count(weekday) %>%
+#and sandwiching onto a graphic
+  ggplot(aes(x = weekday, y = n)) +
+  ylab("Arrests") +
+  xlab("") +
+  geom_point(aes(size = n, color = n), alpha = 0.7, show.legend = FALSE) +
+  scale_size_area(guide = "none", max_size = 25) +
+  scale_y_continuous(limits=c(0, 100)) +
+  labs(title = "Homeless Arrests By Weekday in San Francisco",
+       subtitle = "SF PD Service Call Data 2017-2019: Source: SFPD",
+       caption = "Graphic by Rob Wells, 2/12/2022")
+bubble
+```
+
+-- **Export to Hi Res File**
+```{r}
+ggsave("bubble.png",device = "png",width=9,height=6, dpi=800)
+```
+
+
+
+
+# --30-- 
+
