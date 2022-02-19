@@ -10,7 +10,7 @@ output:
 <br>    
 
 **NICAR 2022: Atlanta, Georgia**   
-ver. 2/12/2022
+ver. 2/19/2022
 
     Rob Wells, Ph.D.
     Philip Merrill College of Journalism
@@ -36,6 +36,8 @@ ver. 2/12/2022
 - **Here is the original dataset: 3,048,797 records**  
 
 https://data.sfgov.org/Public-Safety/Police-Department-Calls-for-Service/hz9m-tj6z/data
+
+    311 logs calls on general non-emergency issues ranging from blocked sidewalks to graffiti to homeless concerns. Details: https://support.datasf.org/help/311-case-data-faq
 
 - **This tutorial uses a subset of this data** 
 
@@ -88,9 +90,11 @@ glimpse(SF)
 
 - **Clean column names, Process dates** 
 ```{r}
+#This cleans column names
 SF <- janitor::clean_names(SF)
-#Process dates
+#This processes dates for analysis
 SF$call_date2 <- ymd(SF$call_date)
+#This creates a new column for year
 SF$year <- year(SF$call_date2)
 ```
 
@@ -118,7 +122,7 @@ head(Years)
 
 ## Basic ggplot
 
--- **ggplot to the rescue**
+-- **Graph Years using ggplot**
 
 ```{r}
 ggplot(data=Years) +
@@ -126,7 +130,7 @@ ggplot(data=Years) +
 
 ```
 
--- **Add some color: fill**
+-- **That's ugly. Add some color: fill= **
 
 ```{r}
 ggplot(data=Years) +
@@ -144,7 +148,7 @@ ggplot(Years,aes(x = year, y = n,
 
 ```
 
--- **Headlines, Annotations and Credits**
+-- **Add Headlines, Annotations and Credits**
 ```{r}
 
 ggplot(Years,aes(x = year, y = n,
@@ -159,9 +163,10 @@ ggplot(Years,aes(x = year, y = n,
        x="Year")
 ```
 
+-- **Filter a dataset, build a chart in one code block**
 
 ```{r}
-#Adapting code from above...
+#Copy section of code from above...
 SF %>% 
    count(year) %>% 
    group_by(year) %>% 
@@ -177,24 +182,23 @@ SF %>%
 ```
 
 
-- **311 Calls per Day**
-Using count to tabulate and group the calls by day
+- **Which Day Had the Most 311 Calls?**
+Using count to tabulate calls by day
 ```{r}
 Days <- SF %>% 
   count(call_date2) %>% 
-  group_by(call_date2) %>% 
   arrange(desc(n))
+
 head(Days)
 ```
 
--- **Quick Plot, Calls by Year**
+-- **Chart Calls by Day**
 
 
 ```{r}
 #Adapting code from above...
 SF %>% 
   count(call_date2) %>% 
-  group_by(call_date2) %>% 
 #Sandwich it onto a simple ggplot
   ggplot(aes(x = call_date2, y = n, fill = n)) +
   geom_bar(stat = "identity") +
@@ -208,8 +212,7 @@ SF %>%
 - **Interviewing: Types of Crimes**
 ```{r}
 SF1 <- SF %>% count(original_crime_type_name) %>% 
-  group_by(original_crime_type_name) %>% 
-  arrange(desc(n))
+    arrange(desc(n))
 head(SF1)
 #view(SF1)
 ```
@@ -233,46 +236,66 @@ summary(Days)
 
 Between March 31, 2016 and Nov. 30, 2019, San Francisco residents placed **an average 117 calls** to police complaining about homeless people.
 
-- **Question**: Identify the day with the most calls? The day had the least?
+- **Question**: Identify the day with the most calls? 
+```{r}
+#Group_by gathers and allows tabulation of all days
+Days %>%
+  group_by(call_date2) %>% 
+  filter(n == max(n)) 
+```
+
+```{r}
+#See what happens without group_by - only the top value is computed, not the aggregation of the component parts
+Days %>%
+  # group_by(call_date2) %>% 
+  filter(n == max(n)) 
+
+```
+<br>   
+<br> 
+-- **Breaking Down Group_By**
+<br> 
+
+<img src="images/group_by.png" width="400" height="400" />
+<br>   
+<br> 
+
+-- **Many thanks**, Ben Stenhaug: https://www.youtube.com/watch?v=6xbGZDUu5W4
+<br>   
+<br> 
+
+- **Question**: Identify the top 5 days with the most calls?
+```{r}
+
+Days %>% 
+   slice_max(n, n = 5)
+#slice_max to the rescue: https://dplyr.tidyverse.org/reference/slice.html
+
+#Or
+#Filter by the value
+# Days %>% 
+#   filter(n == 232)
+```
+
+- **Question**: Identify the top 5 days with the fewest calls?
 ```{r}
 Days %>% 
-  filter(n == 232)
+   slice_min(n, n = 5)
+#Or
+#Filter by the value
+# Days %>% 
+#   filter(n == 10)
 ```
 
-```{r}
-Days %>% 
-  filter(n == 10)
-```
-
--- **Tabulate types of events**
-
-```{r}
-Types <- SF %>% count(original_crime_type_name) %>% 
-  group_by(original_crime_type_name) 
-head(Types)
-
-#View(Types)
-```
-
--- **Question**: What are the top five complaints in this data and provide the number of complaints
+-- **Tabulate types of events**: What are the top five complaints in this data and provide the number of complaints
 
 ```{r}
 #Start with same code as above
 Types <- SF %>% count(original_crime_type_name) %>% 
-  group_by(original_crime_type_name) %>% 
-#Add this line to sort in descending order
-  arrange(desc(n))
-head(Types)
+  slice_max(n, n=5)
+Types
 ```
 
--- **Top 5**   
-Create separate table with just the top five counties' crime rate: "top_n" function 
-```{r}
-SF %>% 
-  count(original_crime_type_name) %>% 
-  top_n(5, n) %>% 
-  arrange(desc(n))
-```
 -- **Export to spreadsheet**
 ```{r}
 write.csv(Days,"Days.csv")
@@ -296,6 +319,9 @@ SF %>%
   select(weekday, crime_id, disposition) %>%
   filter(grepl("ARR", disposition)) %>%
   count(weekday) 
+
+#grepl, your find function: searches for matches of a string, returns true or false. "grep logical"
+
 ```
 
 Make an ugly bubble chart
