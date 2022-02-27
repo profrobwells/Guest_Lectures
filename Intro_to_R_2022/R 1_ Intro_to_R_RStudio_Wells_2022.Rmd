@@ -51,15 +51,7 @@ ver. 2/9/2022
     --File Manager and Html table viewer: Bottom Right  
 <br> 
 
-**Chunks: The gray boxes have live R code. Click the green arrow at the right on line 55 and run the demo() command**
-```{r}
-demo()
-```
-
-```{r}
-help()
-```
-
+**Chunks: The gray boxes have live R code. Click the green arrow at the right on line 55 and run the help.start() command**
 ```{r}
 help.start()
 ```
@@ -68,11 +60,11 @@ help.start()
 
 #### Install software to grab data
 
-    Tidyverse installs 8 separate software packages to perform
+    Tidyverse: Eight separate software packages to perform
     data import, tidying, manipulation, visualisation, and         programming
     
-    Rio package: easy importing features 
-    Janitor package: data cleaning
+    Rio: Easy importing features 
+    Janitor: Data cleaning
 <br> 
 **At Home:**    
 
@@ -92,7 +84,7 @@ After you install a package on your hard drive, you can call it back up by summo
 
 Libraries are bits of software you will have to load each time into R to make things run.
 
-```{r message=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(rio)
 library(janitor)
@@ -184,8 +176,8 @@ sum(MediaBucks$Salary, na.rm=TRUE)
 $106 million! for 1,658 journalists
 
 Context:
-NYT earnings in 2018 = $126m in 2018
-Facebook earnings for two days: $135 million (Q32019=$6.1B)
+NYT earnings in 2020 = $100 m
+Facebook profit for one day: $114 million (Q42021=$10.3B)
 
 average
 ```{r}

@@ -204,9 +204,7 @@ Directions for loading R and R Studio on your personal / work computers are at t
 --Console - write commands in R: Lower Left  
 --File Manager and Html table viewer: Bottom Right  </code></pre>
 <p><br></p>
-<p><strong>Chunks: The gray boxes have live R code. Click the green arrow at the right on line 55 and run the demo() command</strong></p>
-<pre class="r"><code>demo()</code></pre>
-<pre class="r"><code>help()</code></pre>
+<p><strong>Chunks: The gray boxes have live R code. Click the green arrow at the right on line 55 and run the help.start() command</strong></p>
 <pre class="r"><code>help.start()</code></pre>
 <pre><code>## starting httpd help server ... done</code></pre>
 <pre><code>## If the browser launched by &#39;/usr/bin/open&#39; is already running, it is
@@ -216,11 +214,11 @@ Directions for loading R and R Studio on your personal / work computers are at t
 </div>
 <div id="install-software-to-grab-data" class="section level4">
 <h4>Install software to grab data</h4>
-<pre><code>Tidyverse installs 8 separate software packages to perform
+<pre><code>Tidyverse: Eight separate software packages to perform
 data import, tidying, manipulation, visualisation, and         programming
 
-Rio package: easy importing features 
-Janitor package: data cleaning</code></pre>
+Rio: Easy importing features 
+Janitor: Data cleaning</code></pre>
 <p><br> <strong>At Home:</strong></p>
 <pre><code>Nicar session organizers have installed this software on the session computers.
 If you are doing this lesson at home or elsewhere, 
@@ -231,9 +229,8 @@ install the software on your personal or work computer</code></pre>
 #install.packages(&quot;janitor&quot;)</code></pre>
 <p>After you install a package on your hard drive, you can call it back up by summoning a library</p>
 <p>Libraries are bits of software you will have to load each time into R to make things run.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## Warning: package &#39;stringr&#39; was built under R version 4.1.1</code></pre>
-<pre class="r"><code>library(rio)
+<pre class="r"><code>library(tidyverse)
+library(rio)
 library(janitor)</code></pre>
 <p>Check to see what’s installed by clicking on “Packages” tab in File Manager, lower right pane <br></p>
 </div>
@@ -260,6 +257,9 @@ Mixed string data in Gender Identity / Ethnicity, Job duties</code></pre>
 #At Home: See Appendix to load data at home from Internet</code></pre>
 <p><br> What happened? Look at the table</p>
 <pre class="r"><code>View(MediaBucks)</code></pre>
+<pre><code>## Warning in system2(&quot;/usr/bin/otool&quot;, c(&quot;-L&quot;, shQuote(DSO)), stdout = TRUE):
+## running command &#39;&#39;/usr/bin/otool&#39; -L &#39;/Library/Frameworks/R.framework/Resources/
+## modules/R_de.so&#39;&#39; had status 1</code></pre>
 <p>What happened?</p>
 <p>R grabbed the spreadsheet from the folder<br />
 We told R to grab the first sheet, RealMediaSalaries2<br />
@@ -308,7 +308,7 @@ It means: “Make the object named to the left equal to the output of the code t
 <pre class="r"><code>sum(MediaBucks$Salary, na.rm=TRUE)</code></pre>
 <pre><code>## [1] 106177432</code></pre>
 <p>$106 million! for 1,658 journalists</p>
-<p>Context: NYT earnings in 2018 = $126m in 2018 Facebook earnings for two days: $135 million (Q32019=$6.1B)</p>
+<p>Context: NYT earnings in 2020 = $100 m Facebook profit for one day: $114 million (Q42021=$10.3B)</p>
 <p>average</p>
 <pre class="r"><code>mean(MediaBucks$Salary, na.rm=TRUE)</code></pre>
 <pre><code>## [1] 64194.34</code></pre>
