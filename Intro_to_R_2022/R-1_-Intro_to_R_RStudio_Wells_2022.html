@@ -276,6 +276,9 @@ It means: “Make the object named to the left equal to the output of the code t
 <p>How many columns?</p>
 <pre class="r"><code>ncol(MediaBucks)</code></pre>
 <pre><code>## [1] 13</code></pre>
+<p>Dimensions: Gives number rows, then columns</p>
+<pre class="r"><code>dim(MediaBucks)</code></pre>
+<pre><code>## [1] 1658   13</code></pre>
 <p>Names of your columns</p>
 <pre class="r"><code>colnames(MediaBucks)</code></pre>
 <pre><code>##  [1] &quot;TITLE&quot;                     &quot;COMPANY&quot;                  
@@ -410,6 +413,72 @@ summary(Reporters$Salary)</code></pre>
 2: Make a table for editors, figure out medians.   
 3: Find highest paid editor. Resent them.   
 4: Make a table for any position involving data  </code></pre>
+<p>Table with Black reporters at Wall Street Journal</p>
+<pre class="r"><code>WSJ_Black &lt;- MediaBucks %&gt;% filter(Race ==&quot;black&quot;, COMPANY == &quot;WallStreetJournal&quot;)</code></pre>
+<p>Build a simple summary table by Race</p>
+<pre class="r"><code>MediaBucks %&gt;% 
+  select(Race, Salary) %&gt;% 
+  group_by(Race) %&gt;% 
+  summarize(Avg_Salary = mean(Salary, na.rm=TRUE)) %&gt;% 
+  arrange(desc(Avg_Salary))</code></pre>
+<pre><code>## # A tibble: 13 × 2
+##    Race       Avg_Salary
+##    &lt;chr&gt;           &lt;dbl&gt;
+##  1 chinese        76167.
+##  2 australian     75000 
+##  3 african        73485.
+##  4 hispanic       70481.
+##  5 black          69371.
+##  6 poc            68061.
+##  7 asian          66427.
+##  8 noanswer       64925.
+##  9 latina         64806.
+## 10 white          63025.
+## 11 mixed          55756.
+## 12 mideastern     51833.
+## 13 native         50000</code></pre>
+<p>Wait! What are the totals by race?</p>
+<pre class="r"><code>MediaBucks %&gt;% 
+  count(Race) %&gt;% 
+  arrange(desc(n))</code></pre>
+<pre><code>##          Race    n
+## 1       white 1094
+## 2    noanswer  192
+## 3         poc  115
+## 4       asian   77
+## 5       black   57
+## 6    hispanic   53
+## 7      latina   23
+## 8       mixed   22
+## 9     african   13
+## 10 mideastern    7
+## 11    chinese    3
+## 12 australian    1
+## 13     native    1</code></pre>
+<p>Advanced: Build a summary table and count by race</p>
+<pre class="r"><code>MediaBucks %&gt;% 
+  select(Race, Salary) %&gt;% 
+ group_by(Race) %&gt;% 
+  summarize(Total=n(),
+            Avg = mean(Salary, na.rm=TRUE)) %&gt;% 
+  arrange(desc(Total))</code></pre>
+<pre><code>## # A tibble: 13 × 3
+##    Race       Total    Avg
+##    &lt;chr&gt;      &lt;int&gt;  &lt;dbl&gt;
+##  1 white       1094 63025.
+##  2 noanswer     192 64925.
+##  3 poc          115 68061.
+##  4 asian         77 66427.
+##  5 black         57 69371.
+##  6 hispanic      53 70481.
+##  7 latina        23 64806.
+##  8 mixed         22 55756.
+##  9 african       13 73485.
+## 10 mideastern     7 51833.
+## 11 chinese        3 76167.
+## 12 australian     1 75000 
+## 13 native         1 50000</code></pre>
+<pre class="r"><code>#details: https://stackoverflow.com/questions/36183601/average-and-count-with-aggregation-in-r-with-dplyr</code></pre>
 </div>
 <div id="what-you-have-learned-so-far" class="section level4">
 <h4>What You Have Learned So Far</h4>

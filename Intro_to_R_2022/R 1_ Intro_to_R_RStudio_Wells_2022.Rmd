@@ -146,6 +146,11 @@ nrow(MediaBucks)
 ```{r}
 ncol(MediaBucks)
 ```
+Dimensions: Gives number rows, then columns
+```{r}
+dim(MediaBucks)
+```
+
 Names of your columns
 ```{r}
 colnames(MediaBucks)
@@ -298,12 +303,49 @@ Reporters <- subset(MediaBucks, grepl("?reporter", TITLE))
 summary(Reporters$Salary)
 ```
 
+
 Questions:     
 
     1: Who is making $230,504 as a reporter???   
     2: Make a table for editors, figure out medians.   
     3: Find highest paid editor. Resent them.   
     4: Make a table for any position involving data  
+
+
+Table with Black reporters at Wall Street Journal
+```{r}
+WSJ_Black <- MediaBucks %>% filter(Race =="black", COMPANY == "WallStreetJournal")
+```
+
+
+Build a simple summary table by Race
+```{r}
+MediaBucks %>% 
+  select(Race, Salary) %>% 
+  group_by(Race) %>% 
+  summarize(Avg_Salary = mean(Salary, na.rm=TRUE)) %>% 
+  arrange(desc(Avg_Salary))
+```
+
+Wait! What are the totals by race?
+```{r}
+MediaBucks %>% 
+  count(Race) %>% 
+  arrange(desc(n))
+```
+
+
+Advanced: Build a summary table and count by race
+```{r}
+MediaBucks %>% 
+  select(Race, Salary) %>% 
+ group_by(Race) %>% 
+  summarize(Total=n(),
+            Avg = mean(Salary, na.rm=TRUE)) %>% 
+  arrange(desc(Total))
+
+#details: https://stackoverflow.com/questions/36183601/average-and-count-with-aggregation-in-r-with-dplyr
+```
 
 
 #### What You Have Learned So Far
