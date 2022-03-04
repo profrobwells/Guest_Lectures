@@ -3,7 +3,7 @@ title: "R 1: Intro to R and RStudio- 2022"
 output: html_document
 ---
 ### NICAR 2022: Atlanta, Georgia   
-ver. 2/9/2022
+ver. 3/4/2022
 <br>  
 
 <img src="images/RStudio-Logo-Blue-Gradient.png" width="300" height="100" />
@@ -50,6 +50,12 @@ ver. 2/9/2022
     --Console - write commands in R: Lower Left  
     --File Manager and Html table viewer: Bottom Right  
 <br> 
+
+Housekeeping
+```{r}
+setwd("C:/Users/nmradmin/Desktop/hands_on_classes/20220305_r_1_intro_to_r_and_rstudio_saturday_repeat_3034")
+
+```
 
 **Chunks: The gray boxes have live R code. Click the green arrow at the right on line 55 and run the help.start() command**
 ```{r}
