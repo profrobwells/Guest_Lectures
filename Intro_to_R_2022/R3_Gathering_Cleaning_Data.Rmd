@@ -296,6 +296,9 @@ A guide to what these disposition codes mean
 copspeak <- rio::import("Radio_Codes_2016.xlsx", which ="RadioCodes")
 head(copspeak)
 
+#In case the file isn't there:
+#copspeak <- rio::import("https://github.com/profrobwells/Guest_Lectures/blob/master/Intro_to_R_2022/Radio_Codes_2016.xlsx?raw=true", which ="RadioCodes")
+
 #HAN = Handled
 #ADV = Advised
 #GOA = Gone on arrival
@@ -609,7 +612,7 @@ Weekday_Count %>%
 
 #At Home: Load data at home from Internet
 ```{r}
-#SF <- rio::import("https://github.com/profrobwells/HomelessSP2020/blob/master/Data/SF_311_Jan29.xlsx?raw=true", which = "SF Police_Department_Calls_for_") 
+SF <- rio::import("https://github.com/profrobwells/HomelessSP2020/blob/master/Data/SF_311_Jan29.xlsx?raw=true", which = "SF Police_Department_Calls_for_") 
 ```
 
 
