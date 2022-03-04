@@ -10,7 +10,7 @@ output:
 <br>    
 
 **NICAR 2022: Atlanta, Georgia**   
-ver. 2/12/2022
+ver. 3/4/2022
 
     Rob Wells, Ph.D.
     Philip Merrill College of Journalism
@@ -40,6 +40,11 @@ APIs - basics
     A gentle introduction to APIs for data journalists
     https://trendct.org/2016/12/29/fetching-airport-delays-with-python-a-gentle-guide-to-apis-for-journalists/
   
+Housekeeping
+```{r}
+setwd("C:/Users/nmradmin/Desktop/hands_on_classes/20220305_r_3_gathering_and_cleaning_data_saturday_repeat_3039")
+
+```
 
 # Import from an API
 
