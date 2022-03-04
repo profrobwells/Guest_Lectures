@@ -10,7 +10,7 @@ output:
 <br>    
 
 **NICAR 2022: Atlanta, Georgia**   
-ver. 2/19/2022
+ver. 3/4/2022
 
     Rob Wells, Ph.D.
     Philip Merrill College of Journalism
@@ -50,6 +50,13 @@ https://data.sfgov.org/Public-Safety/Police-Department-Calls-for-Service/hz9m-tj
 
 # Part 1: Load Software, Interview Data
 
+Housekeeping
+```{r}
+setwd("C:/Users/nmradmin/Desktop/hands_on_classes/20220305_r_2_data_analysis_and_plotting_saturday_repeat_3038")
+
+```
+
+
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 #background on tidyverse: https://www.tidyverse.org/packages/
 
@@ -57,6 +64,7 @@ library(tidyverse)
 library(janitor)
 library(lubridate)
 ```
+
 
 
 
