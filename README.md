@@ -7,6 +7,6 @@ Contact:
 
 
 Rob Wells, Ph.D.
-University of Arkansas
-Fayetteville, AR 72701
-rswells@uark.edu
+Philip Merrill College of Journalism
+University of Maryland
+robwells@umd.edu
