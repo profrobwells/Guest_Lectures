@@ -1,23 +1,30 @@
 ---
-title: "NICAR Text Analysis"
-author: "Rob Wells"
-date: "2024-11-15"
+title: "NICAR 2025: Text Analysis Introduction"
 output: html_document
 ---
 
-# NICAR 2025: Introduction to Computational Text Analysis
-
-**Get your laptop to find narratives in a pile of documents**
+### **Get your laptop to find narratives in a pile of documents**
 
 March 7, 2025: 2:15 to 3:15 p.m.
 
-This hands-on session will show how to dig through a large batch of files and find common themes and narratives. We will use R and the tidytext package to explore two-word pairs, sentiment analysis and then the quanteda package to examine keywords in context.
+> This hands-on session will show how to dig through a large batch of files and find common themes and narratives. We will use R and the tidytext package to explore two-word pairs, sentiment analysis and then the quanteda package to examine keywords in context.
+>
+> This code demonstrates text processing, cleaning and the creation of bigrams and sentiment analysis from a group of Daily Wire news articles about Kamala Harris and Donald Trump.
 
-This code demonstrates text processing, cleaning and the creation of bigrams and sentiment analysis from a group of Daily Wire news articles about Kamala Harris and Donald Trump.
+::: {style="text-align: center;"}
+<img src="assets\merrill-logo-dark.png" width="300" height="50"/>
+:::
+
+<br>
+
+**Rob Wells, Ph.D.**\
+Philip Merrill College of Journalism, University of Maryland.\
+[robwells\@umd.edu](mailto:robwells@umd.edu){.email} \| <a href="https://www.linkedin.com/in/rob-wells-7929329/">LinkedIn</a>.  
+ver. 1/28/2025.
 
 **Credits:**
 
--   Julia Silge & David Robinson, Text Mining with R: <https://www.tidytextmining.com/>
+-   Julia Silge & David Robinson, [Text Mining with R](https://www.tidytextmining.com/)
 
 -   Nino Mtchedlishvili, Ph.D. student at the Philip Merrill College of Journalism, contributed to this project.
 
@@ -39,10 +46,12 @@ library(DT)
 
 ```
 
-### Harris text
+### Load & process raw text
+
+Kamala Daily Wire coverage from Oct. 14-Nov. 4, 2024
 
 ```{r}
-
+#text obtained with a web scraper
 files <- list.files("./kamala_extracted_text", pattern="*.txt") |> 
   as.data.frame() |> 
   rename(filename = 1) |> 
@@ -84,7 +93,7 @@ anti <- files |>
 
 ```
 
-### Text compiler
+### Compile text into a single dataframe
 
 ```{r include=FALSE, echo=FALSE}
 ###
@@ -140,7 +149,7 @@ articles_df <- articles_df |>
 
 ```
 
-## Clean data
+### Clean data
 
 ```{r}
 phrases <- c("Date:" = "", 
@@ -158,17 +167,17 @@ harris_articles_df <- articles_df |>
 #write.csv(harris_articles_df, "kharris_extracted_text_jan2025.csv")
 ```
 
-# ---------------------------
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
-# Load harris_articles_df data
+## Load processed data
 
-# ---------------------------
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
 ```{r}
 harris_articles_df <- read.csv("kharris_extracted_text_jan2025.csv")
 ```
 
-fact check
+Fact check
 
 ```{r}
 harris_articles_df |> 
@@ -178,7 +187,7 @@ harris_articles_df |>
 
 ```
 
-### Harris Bigrams - Top Phrases
+### Bigrams: top two word phrases
 
 ```{r}
 harris_bigrams <- harris_articles_df |> 
@@ -210,7 +219,9 @@ datatable(top_20_harris_bigrams,
           options = list(pageLength = 20)) 
 ```
 
-## Chart Top Harris Phrases
+ 
+
+### Chart Top Harris Phrases
 
 ```{r}
 ggplot(top_20_harris_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
@@ -223,7 +234,11 @@ ggplot(top_20_harris_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
        y = "Count of terms")
 ```
 
-### Measure Sentiment of Harris articles
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+
+## Measure Sentiment 
+
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
 ```{r}
 # load sentiment dictionary
@@ -253,7 +268,7 @@ harris_sentiment_analysis <- harris_sentiment_analysis |>
   select(index, date, sentiment, sentiment_type, filename, url)
 ```
 
-## Chart sentiment by article
+### Chart sentiment by article
 
 ```{r warning=FALSE}
 
@@ -266,11 +281,7 @@ ggplot(harris_sentiment_analysis, aes(x = index, y = sentiment, fill = sentiment
        y = "Sentiment Score") 
 ```
 
-# ---------------------------
-
-# Analyze Trump and Harris Articles
-
-# ---------------------------
+### Analyze Trump and Harris Articles 
 
 ```{r}
 combined <- read.csv("trump-harris-DW-combined.csv")
@@ -294,7 +305,7 @@ combined |>
   count(candidate)
 ```
 
-### Sentiment of Daily News coverage
+### Sentiment of Trump, Harris in Daily Wire
 
 ```{r}
 # load sentiment dictionary
@@ -341,7 +352,11 @@ ggplot(combined_sentiment_analysis,
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Makes date labels more readable
 ```
 
-# Examine Top Negative Phrases
+ 
+
+ 
+
+### Examine Top Negative Phrases
 
 ```{r}
 negative_bigrams <- combined |> 
@@ -386,11 +401,11 @@ datatable(top_50_negative_bigrams,
 
 ```
 
-# ---------------------------
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
-# Examine Keywords, Phrases in Context.
+## Examine Keywords, Phrases in Context.
 
-# ---------------------------
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
 ### Process Text Corpus Object
 
@@ -444,11 +459,15 @@ datatable(media_narratives_table,
           options = list(pageLength = 20)) 
 ```
 
-# ---------------------------
+   
 
-# Extra Content
+ 
 
-# ---------------------------
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+
+# Background Content
+
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
 ### Sentiment of Trump, Harris headlines
 
@@ -633,7 +652,7 @@ top_20_trump_bigrams <- trump_bigrams |>
   select(bigram, n)
 ```
 
-## Chart Trump Bigrams
+### Chart Trump Bigrams
 
 ```{r}
 ggplot(top_20_trump_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
@@ -646,7 +665,7 @@ ggplot(top_20_trump_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
        y = "Count of terms")
 ```
 
-## Trump Sentiment analysis
+### Trump Sentiment analysis
 
 ```{r}
 # load sentiment dictionary
@@ -689,7 +708,7 @@ ggplot(trump_sentiment_analysis, aes(x = index, y = sentiment, fill = sentiment_
        y = "Sentiment Score") 
 ```
 
-## Combine Harris, Trump articles
+### Combine Harris, Trump articles
 
 ```{r}
 harris_articles_df <- harris_articles_df |> 
