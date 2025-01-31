@@ -1,26 +1,39 @@
 ---
-title: "NICAR 2025: Text Analysis Introduction"
 output: html_document
 ---
 
-### **Get your laptop to find narratives in a pile of documents**
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+<span style="font-size: 40pt;">Finding narratives in documents</span>  
 
-March 7, 2025: 2:15 to 3:15 p.m.
+:::
+<br>  
 
-> This hands-on session will show how to dig through a large batch of files and find common themes and narratives. We will use R and the tidytext package to explore two-word pairs, sentiment analysis and then the quanteda package to examine keywords in context.
->
-> This code demonstrates text processing, cleaning and the creation of bigrams and sentiment analysis from a group of Daily Wire news articles about Kamala Harris and Donald Trump.
-
-::: {style="text-align: center;"}
-<img src="assets\merrill-logo-dark.png" width="300" height="50"/>
+::: {style="text-align: center;font-size: 14pt;"}
+**NICAR 2025**  
+**Time: Friday, March 7, 2025: 2:15 to 3:15 p.m.**  
+**Location: Crystal Lake room, fourth floor**   
+<span style='font-size: 8pt;'>ver. 1/31/2025.</span>
 :::
 
-<br>
 
+> This hands-on session will show how to analyze a large batch of files to find common themes and narratives. We will use R and the Tidytext package to explore common words, analyze sentiment, and then the Quanteda package to examine keywords in the story context.
+>
+> This code demonstrates text processing, data cleaning and the creation of bigrams and sentiment analysis from a group of Daily Wire news articles about Kamala Harris and Donald Trump.
+
+::: {style="text-align: center;"}
+<img src="assets\merrill-logo-dark.png" width="450" height="75"/>
+:::
+
+<br> 
+
+
+::: {style="text-align: center;"}
 **Rob Wells, Ph.D.**\
 Philip Merrill College of Journalism, University of Maryland.\
-[robwells\@umd.edu](mailto:robwells@umd.edu){.email} \| <a href="https://www.linkedin.com/in/rob-wells-7929329/">LinkedIn</a>.  
-ver. 1/28/2025.
+[robwells\@umd.edu](mailto:robwells@umd.edu){.email} \| <a href="https://www.linkedin.com/in/rob-wells-7929329/">LinkedIn</a>.\
+:::
+
+
 
 **Credits:**
 
@@ -28,7 +41,7 @@ ver. 1/28/2025.
 
 -   Nino Mtchedlishvili, Ph.D. student at the Philip Merrill College of Journalism, contributed to this project.
 
-### Load software
+## Load software
 
 ```{r message=FALSE, warning=FALSE}
 #Install packages if you don't have them already
@@ -46,7 +59,7 @@ library(DT)
 
 ```
 
-### Load & process raw text
+#### Load & process raw text
 
 Kamala Daily Wire coverage from Oct. 14-Nov. 4, 2024
 
@@ -66,7 +79,7 @@ files <- list.files("./kamala_extracted_text", pattern="*.txt") |>
  # mutate(index = str_extract(filename, "\\d+")) |> 
  #  mutate(index = as.numeric(index))
 
-kharris_index <- rio::import("DW_Kamala_Articles.xlsx") |> 
+kharris_index <- rio::import("./assets/DW_Kamala_Articles.xlsx") |> 
   mutate(name = str_replace_all(tolower(NAME), " ", "_")) |> 
   mutate(name = str_replace_all(name, "[[:punct:]]", "")) |> 
   arrange((name)) |> 
@@ -93,7 +106,7 @@ anti <- files |>
 
 ```
 
-### Compile text into a single dataframe
+#### Compile text into a single dataframe
 
 ```{r include=FALSE, echo=FALSE}
 ###
@@ -149,7 +162,7 @@ articles_df <- articles_df |>
 
 ```
 
-### Clean data
+#### Clean data
 
 ```{r}
 phrases <- c("Date:" = "", 
@@ -167,14 +180,16 @@ harris_articles_df <- articles_df |>
 #write.csv(harris_articles_df, "kharris_extracted_text_jan2025.csv")
 ```
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+<br> 
 
-## Load processed data
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Load processed data
+:::
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+<br>
 
 ```{r}
-harris_articles_df <- read.csv("kharris_extracted_text_jan2025.csv")
+harris_articles_df <- read.csv("./assets/kharris_extracted_text_jan2025.csv")
 ```
 
 Fact check
@@ -187,7 +202,15 @@ harris_articles_df |>
 
 ```
 
-### Bigrams: top two word phrases
+<br>   
+
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Bigrams: top phrases
+:::    
+
+<br>
+
+
 
 ```{r}
 harris_bigrams <- harris_articles_df |> 
@@ -212,6 +235,8 @@ top_20_harris_bigrams <- harris_bigrams |>
   mutate(bigram = paste(word1, " ", word2)) |> 
   select(bigram, n)
 ```
+<br> 
+<br>  
 
 ```{r}
 datatable(top_20_harris_bigrams,
@@ -221,7 +246,7 @@ datatable(top_20_harris_bigrams,
 
  
 
-### Chart Top Harris Phrases
+#### Chart Top Harris Phrases
 
 ```{r}
 ggplot(top_20_harris_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
@@ -234,11 +259,13 @@ ggplot(top_20_harris_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
        y = "Count of terms")
 ```
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+<br>   
 
-## Measure Sentiment 
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Measure Sentiment
+:::    
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+<br>
 
 ```{r}
 # load sentiment dictionary
@@ -268,7 +295,7 @@ harris_sentiment_analysis <- harris_sentiment_analysis |>
   select(index, date, sentiment, sentiment_type, filename, url)
 ```
 
-### Chart sentiment by article
+#### Chart sentiment by article
 
 ```{r warning=FALSE}
 
@@ -281,10 +308,10 @@ ggplot(harris_sentiment_analysis, aes(x = index, y = sentiment, fill = sentiment
        y = "Sentiment Score") 
 ```
 
-### Analyze Trump and Harris Articles 
+#### Analyze Trump and Harris Articles
 
 ```{r}
-combined <- read.csv("trump-harris-DW-combined.csv")
+combined <- read.csv("./assets/trump-harris-DW-combined.csv")
 
 #There are nine common articles the Trump / Harris corpra. Create a new category for shared article
 combined_index <- combined |>
@@ -293,7 +320,7 @@ combined_index <- combined |>
   mutate(shared_article = n() > 1) |>
   ungroup()
 
-write.csv(combined_index, "combined_index.csv")
+write.csv(combined_index, "./assets/combined_index.csv")
 
 ```
 
@@ -305,7 +332,7 @@ combined |>
   count(candidate)
 ```
 
-### Sentiment of Trump, Harris in Daily Wire
+#### Sentiment of Trump, Harris in Daily Wire
 
 ```{r}
 # load sentiment dictionary
@@ -335,7 +362,10 @@ combined_sentiment_analysis <- combined_sentiment_analysis |>
 
 ```
 
-### Chart Trump, Harris Sentiment by Date
+<br>   
+<br>   
+
+#### Chart Trump, Harris Sentiment by Date
 
 ```{r}
 
@@ -356,7 +386,7 @@ ggplot(combined_sentiment_analysis,
 
  
 
-### Examine Top Negative Phrases
+#### Examine Top Negative Phrases
 
 ```{r}
 negative_bigrams <- combined |> 
@@ -401,14 +431,15 @@ datatable(top_50_negative_bigrams,
 
 ```
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+<br>    
 
-## Examine Keywords, Phrases in Context.
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Examine Keywords, Phrases in Context
+:::   
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+<br>
 
-### Process Text Corpus Object
-
+Process Text Corpus Object
 ```{r}
 
 # Create a corpus using the 'sentence' column as the text field
@@ -416,7 +447,7 @@ my_corpus <- corpus(combined, text_field = "sentence") # build a new corpus from
 docvars(my_corpus)$candidate <- combined$candidate 
 ```
 
-### Search for the term "media"
+#### Search for the term "media"
 
 ```{r}
 # First add a unique identifier to combined
@@ -439,7 +470,7 @@ quanteda_test <- kwic(my_tokens, pattern = "media", valuetype = "regex") |>
 
 ```
 
-### Search Journalism Terms
+#### Search Journalism Terms
 
 ```{r}
 media_narratives <- kwic(my_tokens, 
@@ -463,13 +494,16 @@ datatable(media_narratives_table,
 
  
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+<br>  
 
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Background Content
+:::   
 
-# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
-### Sentiment of Trump, Harris headlines
+<br>
+
+#### Sentiment of Trump, Harris headlines
 
 ```{r}
 #tokenize the headlines only
@@ -494,7 +528,7 @@ headline_sentiment_analysis <- headline_sentiment_analysis|>
 
 ```
 
-### Headline sentiment charted
+#### Headline sentiment charted
 
 ```{r}
 
@@ -511,7 +545,7 @@ ggplot(headline_sentiment_analysis,
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Makes date labels more readable
 ```
 
-### Building the Trump text dataframe
+#### Building the Trump text dataframe
 
 ```{r}
 
@@ -525,7 +559,7 @@ tfiles <- list.files("./trump_extracted_text", pattern="*.txt") |>
   mutate(index = row_number())
 
 
-trump_index <- rio::import("DW_Trump_Articles.xlsx") |> 
+trump_index <- rio::import("./assets/DW_Trump_Articles.xlsx") |> 
   mutate(name = str_replace_all(tolower(Name), " ", "_")) |> 
   mutate(name = str_replace_all(name, "[[:punct:]]", "")) |> 
   arrange((name)) |> 
@@ -652,7 +686,7 @@ top_20_trump_bigrams <- trump_bigrams |>
   select(bigram, n)
 ```
 
-### Chart Trump Bigrams
+#### Chart Trump Bigrams
 
 ```{r}
 ggplot(top_20_trump_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
@@ -665,7 +699,7 @@ ggplot(top_20_trump_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
        y = "Count of terms")
 ```
 
-### Trump Sentiment analysis
+#### Trump Sentiment analysis
 
 ```{r}
 # load sentiment dictionary
@@ -708,7 +742,7 @@ ggplot(trump_sentiment_analysis, aes(x = index, y = sentiment, fill = sentiment_
        y = "Sentiment Score") 
 ```
 
-### Combine Harris, Trump articles
+#### Combine Harris, Trump articles
 
 ```{r}
 harris_articles_df <- harris_articles_df |> 
@@ -722,3 +756,13 @@ trump_articles_df <- trump_articles_df |>
 #write.csv(combined, "trump-harris-DW-combined.csv")
 
 ```
+
+<br>    
+
+
+::: {style="text-align: center;"}
+**Questions?**   
+**Rob Wells, Ph.D.**\
+Philip Merrill College of Journalism, University of Maryland.\
+[robwells\@umd.edu](mailto:robwells@umd.edu){.email} \| <a href="https://www.linkedin.com/in/rob-wells-7929329/">LinkedIn</a>.\
+:::
