@@ -1,0 +1,597 @@
+---
+title: "R 1: Intro to R and RStudio- 2022"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+### NICAR 2024: Baltimore
+
+ver. 2/1/2024 <br>
+
+<img src="images/RStudio-Logo-Blue-Gradient.png" width="300" height="100"/>
+<br>\
+<br>
+
+```         
+Rob Wells, Ph.D.
+Philip Merrill College of Journalism
+University of Maryland
+robwells@umd.edu
+LinkedIn: https://www.linkedin.com/in/rob-wells-7929329/ 
+```
+
+<br> <br>
+
+<img src="images/merrill-logo-dark.png" width="300" height="50"/> <br>\
+<br>
+
+### Note:
+
+```         
+Nicar session organizers have installed this software on the session computers.
+See the **"At Home"** notes on how to install the software and data on your personal or work computer so you can work on this lesson after the class
+Directions for loading R and R Studio on your personal / work computers are at the end of this tutorial
+```
+
+<br> <br>
+
+#### Get Organized
+
+```{r}
+#setwd("./Desktop/hands_on_classes/r_1_intro_to_r_and_rstudio_1083")
+#At Home: Skip this step, since your computer doesn't have this folder.
+#Instead, create a new folder on your Desktop or other convenient spot, call it R_Lessons, copy this file R 1_ Intro_to_R_RStudio_Wells_2022.Rmd into the folder, and then launch the file
+```
+
+<br> <br>
+
+#### Orientation to R Studio
+
+```         
+There are four main windows:  
+
+--Script writing, R Markdown, Table Viewer: Upper Left  
+--Environment - data loaded in R: Upper Right  
+--Console - write commands in R: Lower Left  
+--File Manager and Html table viewer: Bottom Right  
+```
+
+<br>
+
+Housekeeping
+
+```{r}
+# setwd("C:/Users/nmradmin/Desktop/hands_on_classes/20220305_r_1_intro_to_r_and_rstudio_saturday_repeat_3034")
+
+```
+
+**Chunks: The gray boxes have live R code. Click the green arrow at the
+right on line 55 and run the help.start() command**
+
+```{r}
+help.start()
+```
+
+<br> <br>
+
+#### Install software to grab data
+
+```         
+Tidyverse: Eight separate software packages to perform
+data import, tidying, manipulation, visualisation, and         programming
+
+Rio: Easy importing features 
+Janitor: Data cleaning
+```
+
+<br> **At Home:**
+
+```         
+Nicar session organizers have installed this software on the session computers.
+If you are doing this lesson at home or elsewhere, 
+delete the hashtag before install.packages and 
+install the software on your personal or work computer
+```
+
+```{r}
+#install.packages("tidyverse")
+#install.packages("rio") 
+#install.packages("janitor")
+```
+
+After you install a package on your hard drive, you can call it back up
+by summoning a library
+
+Libraries are bits of software you will have to load each time into R to
+make things run.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(rio)
+library(janitor)
+```
+
+Check to see what's installed by clicking on "Packages" tab in File
+Manager, lower right pane <br>
+
+#### Data
+
+```         
+Open this file in Excel:
+
+./R1_Intro_R_RStudio_Wells/RealMediaSalariesCleaned.xlsx
+
+1) Select RealMediaSalaries2 tab
+
+IRE Old School: Four Corners Test!
+13 Columns
+1658 Rows
+
+Numberic data in Salary, Years Experience
+Mixed string data in Gender Identity / Ethnicity, Job duties
+```
+
+<br> <br>
+
+#### Import Data
+
+```{r}
+MediaBucks <- rio::import("RealMediaSalariesCleaned.xlsx", which = "RealMediaSalaries2")
+
+#At Home: See Appendix to load data at home from Internet
+```
+
+<br> What happened? Look at the table
+
+```{r}
+View(MediaBucks)
+```
+
+What happened?
+
+R grabbed the spreadsheet from the folder\
+We told R to grab the first sheet, RealMediaSalaries2\
+R created a dataframe called MediaBucks\
+basics of R: \<- is known as an “assignment operator.”\
+It means: “Make the object named to the left equal to the output of the
+code to the right.”
+
+<br> <br>
+
+#### Explore Data
+
+How many rows?
+
+```{r}
+nrow(MediaBucks)
+```
+
+How many columns?
+
+```{r}
+ncol(MediaBucks)
+```
+
+Dimensions: Gives number rows, then columns
+
+```{r}
+dim(MediaBucks)
+```
+
+Names of your columns
+
+```{r}
+colnames(MediaBucks)
+```
+
+OR
+
+```{r}
+names(MediaBucks)
+```
+
+Check data types
+
+```{r}
+#During class, remove hashtag on next line and run chunk
+#str(MediaBucks)
+```
+
+Let's look at the first six rows
+
+```{r}
+#During class, remove hashtag on next line and run chunk
+#head(MediaBucks)
+```
+
+Here is a quick way to view the range of your data
+
+```{r}
+summary(MediaBucks$Salary)
+```
+
+Size and scope
+
+```{r}
+sum(MediaBucks$Salary, na.rm=TRUE)
+```
+
+\$106 million! for 1,658 journalists
+
+Context: NYT earnings in 2022 = \$174 m Facebook profit for one day:
+\$129 million (Q32023=\$11.6B)
+
+average
+
+```{r}
+mean(MediaBucks$Salary, na.rm=TRUE)
+```
+
+Distribution
+
+```{r}
+quantile(MediaBucks$Salary, c(0.1, 0.2, 0.3, 0.4,0.5, 0.6, 0.7, 0.8, 0.9), na.rm=TRUE)
+```
+
+```{r}
+quantile(MediaBucks$Salary, c(0.25, 0.50, 0.75, 0.9, 0.99), na.rm=TRUE)
+```
+
+<br>
+
+#### Navigation Tips
+
+```         
+Shortcut Commands
+Tab - Autocomplete
+In Console Window (lower left) 
+--Control (or Command) + UP arrow - last lines run
+Control (or Command) + Enter - Runs current or selected lines of code in the top left box of RStudio
+Shift + Control (or Command) +P - Reruns previous region code
+```
+
+<br> <br>
+
+#### Dplyr
+
+```         
+dplyr has many tools for data analysis   
+select Choose which columns to include  
+filter Filter the data 
+arrange Sort the data, by size for continuous variables, by date, or alphabetically 
+group_by Group the data by a categorical variable 
+```
+
+<br>
+
+Build a simple summary table by Gender
+
+```{r}
+MediaBucks %>% 
+  select(Gender, Salary) %>% 
+  group_by(Gender) %>% 
+  summarize(Total = sum(Salary, na.rm=TRUE))
+```
+
+What is the sample size?
+
+```{r}
+MediaBucks %>% 
+  count(Gender) %>% 
+  arrange(desc(n))
+```
+
+Better idea: Check Averages!
+
+Build a simple summary table by Gender
+
+```{r}
+MediaBucks %>% 
+  select(Gender, Salary) %>% 
+  group_by(Gender) %>% 
+  summarize(Avg_Salary = mean(Salary, na.rm=TRUE))
+```
+
+Quick filter out hourly workers
+
+```{r}
+MediaSalary <- MediaBucks %>% 
+  filter(Salary >= 1000)
+```
+
+Questions:
+
+```         
+1: View the range of your data    
+2: Number of rows  
+3: Number of rows cut with filter  
+```
+
+<br>
+
+#### Find Your News Organization
+
+Filter
+
+```{r}
+WSJ <- subset(MediaBucks, COMPANY=="WallStreetJournal")  
+```
+
+```{r}
+summary(WSJ$Salary)
+```
+
+Using Wildcards
+
+```{r}
+Journal <- subset(MediaBucks, grepl("?Journal", COMPANY))
+```
+
+```{r}
+Bloom <- subset(MediaBucks, grepl("?Bloomberg", COMPANY))
+```
+
+Questions
+
+1: Build a table for NewYorkTimes employees  
+```{r}
+NYT <- subset(MediaBucks, COMPANY=="NewYorkTimes")  
+
+```
+2: Determine median salary of NewYorkTimes employees  
+
+```{r}
+summary(NYT$Salary)
+```
+3: Identify title, gender and race of the highest paid position at NYT  
+
+```{r}
+
+NYT %>% 
+  select(TITLE, Salary, Gender) %>% 
+  filter(Salary >= 350000)
+
+```
+
+4: Search for "Business" in Company, check salaries, compare to "Bloomberg"   
+
+```{r}
+
+Biz <- subset(MediaBucks, grepl("?Business", COMPANY))
+
+summary(Biz$Salary)
+```
+
+<br> \#### More Tables
+
+Build a table with several companies of your choice
+
+```{r}
+BigBoys <- filter(MediaSalary, COMPANY %in% c("NewYorkTimes", "WallStreetJournal", "Bloomberg"))    
+```
+
+Table with just reporter salaries
+
+```{r}
+Reporters <- subset(MediaBucks, grepl("?reporter", TITLE))
+summary(Reporters$Salary)
+```
+
+Questions:
+
+        
+1: Who is making $230,504 as a reporter???
+```{r}
+
+Reporters %>% 
+  select(COMPANY, TITLE, Salary) %>% 
+  filter(Salary == 230504)
+
+```
+2: Make a table for editors, figure out medians.   
+
+```{r}
+
+Editors <- subset(MediaBucks, grepl("?editor", TITLE))
+summary(Editors$Salary)
+
+Editors %>% 
+  select(COMPANY, TITLE, Salary) %>% 
+  filter(Salary == 245000)
+```
+
+3: Find highest paid editor. Resent them.   
+4: Make a table for any position involving data  
+
+
+```{r}
+Data <- subset(MediaBucks, grepl("?data", JOB_DUTIES))
+summary(Data$Salary)
+#The median salary for a person with data responsibilities is $59,000 versus $50,625 for someone named as reporter.
+```
+
+Table with Black reporters at Wall Street Journal
+
+```{r}
+WSJ_Black <- MediaBucks %>% filter(Race =="black", COMPANY == "WallStreetJournal")
+```
+
+Build a simple summary table by Race
+
+```{r}
+MediaBucks %>% 
+  select(Race, Salary) %>% 
+  group_by(Race) %>% 
+  summarize(Avg_Salary = mean(Salary, na.rm=TRUE)) %>% 
+  arrange(desc(Avg_Salary))
+```
+
+Wait! What are the totals by race?
+
+```{r}
+MediaBucks %>% 
+  count(Race) %>% 
+  arrange(desc(n))
+```
+
+Advanced: Build a summary table and count by race
+
+```{r}
+MediaBucks %>% 
+  select(Race, Salary) %>% 
+ group_by(Race) %>% 
+  summarize(Total=n(),
+            Avg = mean(Salary, na.rm=TRUE)) %>% 
+  arrange(desc(Total))
+
+#details: https://stackoverflow.com/questions/36183601/average-and-count-with-aggregation-in-r-with-dplyr
+```
+
+#### What You Have Learned So Far
+
+```         
+How to navigate in R studio   
+How to install libraries and packages    
+How to import a .xlsx file into R   
+How to obtain summary statistics (summary)   
+How to build basic tables from a dataset   
+How to conduct filter queries from a dataset   
+```
+
+<br>
+
+# Appendix
+
+<br>
+
+#### Install R and R Studio
+
+This is free and open source software. It is not large and doesn't tax
+the memory a lot. R runs on Windows, Mac and Linux, but this course is
+designed for the Mac version. If you use Windows, there may be
+variations in the lessons and instructions. Please see me for questions.
+Installing R is a two-step process:
+
+1)  Install R, the actual program
+
+<https://mirrors.nics.utk.edu/cran/>
+
+Accept all of the default settings.
+
+2)  Install RStudio. This is the graphical interface we use to manage
+    and create R code. Download the open source edition of R Studio
+    desktop and follow the prompts to install it.
+
+Download R Studio:
+<https://rstudio.com/products/rstudio/download/#download>"
+
+More detailed instructions for installing R and R Studio:
+<http://www.machlis.com/R4Journalists/download-r-and-rstudio.html>
+
+Here's a good overview of the program:
+<https://docs.google.com/presentation/d/1O0eFLypJLP-PAC63Ghq2QURAnhFo6Dxc7nGt4y_l90s/edit#slide=id.p>
+
+<br> <br>
+
+#### Load Data for Tutorial At Home:
+
+```         
+If you are doing this tutorial at home on your personal machine, you can load spreadsheets from the Internet as follows:
+```
+
+```{r}
+#remove hashtag in front of MediaBucks. Colors change to black and you can run the chunk
+
+#MediaBucks <- rio::import("https://docs.google.com/spreadsheets/d/1SP3Sqqdv6R8chFamjtgdNlOrUar-hJXvkMSeha2mHQ8/edit#gid=0", which = "Salaries", skip = 3)
+```
+
+<br> <br>
+
+#### Tutorials
+
+MaryJo Webster tutorials
+<https://sites.google.com/view/mj-basic-data-academy/intro-to-r?authuser=0>
+
+Merrill College eBook: Data Journalism with R and the Tidyverse
+<https://wellsdata.github.io/data_journalism_class/_book/>
+
+Excellent book by Sharon Machlis
+<https://www.routledge.com/Practical-R-for-Mass-Communication-and-Journalism/Machlis/p/book/9781138726918>
+
+First five chapters are free on her website. My recommendation: buy the
+book. <https://www.machlis.com/R4Journalists/>
+
+All Cheat Sheets <https://www.rstudio.com/resources/cheatsheets/>
+
+Andrew Ba Tran first Data Analysis Steps Using R
+<https://docs.google.com/presentation/d/1O0eFLypJLP-PAC63Ghq2QURAnhFo6Dxc7nGt4y_l90s/edit#slide=id.p>
+
+Base R Cheat Sheet
+<https://www.povertyactionlab.org/sites/default/files/r-cheat-sheet.pdf>
+
+
+#Bonus Material! ggplot
+## Basic ggplot
+
+-- **Graph Years using ggplot**
+
+```{r}
+options(scipen=999)
+ggplot(data=Biz) +
+  geom_col(mapping=aes(x=Salary, y=COMPANY)) 
+
+```
+
+-- **That's ugly. Add some color: fill= **
+
+```{r}
+ggplot(data=Biz) +
+  geom_col(mapping=aes(x=Salary, y=COMPANY, fill=Salary))
+
+
+```
+
+-- **Ditch the legend**
+```{r}
+
+ggplot(Biz,aes(x = Salary, y = COMPANY,
+             fill = Salary)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none")
+
+```
+
+-- **Add Headlines, Annotations and Credits**
+```{r}
+
+ggplot(Biz,aes(x = Salary, y = COMPANY,
+             fill = Salary)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none") +
+#This is your title sequence
+  labs(title = "Salaries for `Business` Publications",
+       subtitle = "Crowdsourced Media Salary Details",
+       caption = "Graphic by Rob Wells, 3-8-2024",
+       y="Publication",
+       x="Salary")
+```
+
+-- **Filter a dataset, build a chart in one code block**
+
+```{r}
+#Copy section of code from above...
+MediaBucks %>% 
+  filter(COMPANY == "WallStreetJournal") %>% 
+#Sandwich it onto a simple ggplot
+  ggplot(aes(x = Salary, y = Race, fill = Race)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none") +
+  labs(title = "Salaries of Wall Street Journal Staff by Race", 
+       subtitle = "Crowdsourced Media Salaries Data",
+       caption = "Graphic by Wells",
+       y="Race",
+       x="Salary")
+```
+
