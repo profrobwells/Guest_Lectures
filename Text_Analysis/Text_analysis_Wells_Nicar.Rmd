@@ -10,9 +10,9 @@ output: html_document
 
 ::: {style="text-align: center;font-size: 14pt;"}
 **NICAR 2025**  
-**Time: Friday, March 7, 2025: 2:15 to 3:15 p.m.**  
-**Location: Crystal Lake room, fourth floor**   
-<span style='font-size: 8pt;'>ver. 1/31/2025.</span>
+**Time: Saturday, March 8, 2025: 9 a.m. - 10 a.m.**  
+**Location: Spring Park Bay Room, 8th Floor**   
+<span style='font-size: 8pt;'>ver. 3/05/2025.</span>
 :::
 
 
@@ -56,6 +56,9 @@ library(tidytext)
 library(quanteda)
 library(readtext)
 library(DT)
+
+#load this - late addition
+library(lubridate)
 
 ```
 
