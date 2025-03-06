@@ -51,14 +51,17 @@ Philip Merrill College of Journalism, University of Maryland.\
 #install.packages("readtext")
 #install.packages("DT")
 
+#NICAR note: add these two
+#install.packages("rio")
+#install.packages("lubridate")
+
 library(tidyverse)
 library(tidytext) 
 library(quanteda)
 library(readtext)
 library(DT)
-
-#load this - late addition
 library(lubridate)
+library(rio)
 
 ```
 

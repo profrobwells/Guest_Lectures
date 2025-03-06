@@ -19,7 +19,7 @@ This natural language processing toolkit provides language-agnostic 'tokenizatio
 
 This code loads an English language model to permit tagging of parts of speech.
 This version only deals with adjectives.
-It then counts all adjectives across all articles and then counts adjectives by article Credit to Claude.ai for providing the basis of this code.
+It then counts all adjectives across all articles and then counts adjectives by article. Credit to Claude.ai for providing the basis of this code.
 
 ```{r}
 #install.packages("udpipe")
@@ -34,7 +34,7 @@ udmodel <- udpipe_download_model(language = "english")
 udmodel <- udpipe_load_model(udmodel$file_model)
 ```
 
-### Annotate parts of speech on Harris articlezs
+### Annotate parts of speech on Harris articles
 
 ```{r}
 # Then run your annotation
@@ -49,7 +49,7 @@ It permits analysis of grammatical and syntactic structure of text.
 
 Breaking down the details in an annotated dataframe from UDPipe:
 
--   doc_id: Identifier for the document - this matches what you provided as harris_articles_df\$filename in your annotation function.
+-   doc_id: Identifier for the document - this matches harris_articles_df\$filename.
 
 -   paragraph_id: Identifier for paragraphs within each document.
 
@@ -76,11 +76,11 @@ Breaking down the details in an annotated dataframe from UDPipe:
 
 -   misc: Miscellaneous information that doesn't fit elsewhere, often contains spans of tokens or other metadata.
 
-Learn more about [Universal Dependencies](https://universaldependencies.org/)
+Learn more about [Universal Dependencies format](https://universaldependencies.org/format.html)
 
 
 
-A paper about all of this process [Tokenizing, POS Tagging, Lemmatizing and Parsing UD 2.0 with UDPipe](https://ufal.mff.cuni.cz/~straka/papers/2017-conll_udpipe.pdf)
+A nerdy paper about this process [Tokenizing, POS Tagging, Lemmatizing and Parsing UD 2.0 with UDPipe](https://ufal.mff.cuni.cz/~straka/papers/2017-conll_udpipe.pdf)
 
 
 ## Count adjectives
@@ -173,3 +173,30 @@ datatable(pairs_by_article,
           caption = "Adjectives-noun pairs by article in Harris DW coverage",
           options = list(pageLength = 50)) 
 ```
+
+
+#Bonus Zone
+[Apply these ideas to our data.](https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-postagging-lemmatisation.html)
+
+
+### Basic frequency statistics
+[For a detailed list of all POS tags](https://universaldependencies.org/u/pos/index.html)
+
+```{r}
+library(lattice)
+stats <- txt_freq(annotated_df$upos)
+stats$key <- factor(stats$key, levels = rev(stats$key))
+barchart(key ~ freq, data = stats, col = "cadetblue", 
+         main = "Parts of Speech in Harris DW coverage \n frequency of occurrence", 
+         xlab = "Freq")
+```
+### Examine nouns
+```{r}
+## NOUNS
+stats <- subset(annotated_df, upos %in% c("NOUN")) 
+stats <- txt_freq(stats$token)
+stats$key <- factor(stats$key, levels = rev(stats$key))
+barchart(key ~ freq, data = head(stats, 20), col = "cadetblue", 
+         main = "Most occurring nouns", xlab = "Freq")
+```
+
