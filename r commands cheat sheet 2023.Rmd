@@ -1,0 +1,1221 @@
+---
+title: "R Commands Cheat Sheet Aug 2023"
+author: "Gizmofo"
+date: "2023-08-25"
+output:
+ html_document:
+   toc: true
+   number_sections: true
+---
+
+
+
+## Wells Tutorials
+
+### Intro to R
+- [Course Link](https://profrobwells.github.io/Guest_Lectures/Intro_to_R_2022/R-1_-Intro_to_R_RStudio_Wells_2022.html)
+- [Code on GitHub](https://github.com/profrobwells/Guest_Lectures/tree/master/Intro_to_R_2022)
+
+### R2 Data Analysis and Plotting
+- [Code on GitHub](https://github.com/profrobwells/Guest_Lectures/blob/master/Intro_to_R_2022/R2_Data_Analysis_Plotting.Rmd)
+- [Rendered HTML](https://profrobwells.github.io/Guest_Lectures/Intro_to_R_2022/R2_Data_Analysis_Plotting.html)
+
+### R3 Gathering and Cleaning Data
+- [Code on GitHub](https://github.com/profrobwells/Guest_Lectures/blob/master/Intro_to_R_2022/R3_Gathering_Cleaning_Data.Rmd)
+- [Rendered HTML](https://profrobwells.github.io/Guest_Lectures/Intro_to_R_2022/R3_Gathering_Cleaning_Data.html)
+
+### Fall Covid Data Class
+- [Syllabus](https://profrobwells.github.io/CovidFall2020/Syllabus_Jour5283_Fall2020.html)
+- [Schedule](https://profrobwells.github.io/CovidFall2020/Schedule_Fall2020_Jour5283_Data.html)
+
+### Evictions Analysis, June 2020
+- [Link](https://profrobwells.github.io/HomelessSP2020/Evictions_Analysis_6-1-2020.html)
+
+### Milwaukee, July 2020
+- [Link](https://profrobwells.github.io/HomelessSP2020/Milwaukee_Evictions_8-21-2020.html)
+
+## Guest Lectures
+
+### Business Journalism
+- [IRE Conference](https://profrobwells.github.io/Guest_Lectures/IRE.Companies/IRE_20.html)
+- [Companies Research](http://bit.do/covid_companies)
+
+### National Press Foundation Presentation
+- [Company Research](https://profrobwells.github.io/Guest_Lectures/NPF_Companies/NPF_20.html)
+- [Visualizing State and Local Economy](https://profrobwells.github.io/Visualizing_State_Local_Economy/IRE19_GDP.html)
+
+### FBI Data, March 2020
+- [Link](https://profrobwells.github.io/Guest_Lectures/FBICrime_Towson_2020.html)
+
+### Arkansas Press Women Presentation, October 2019
+- [Link](https://profrobwells.github.io/ArkPressWomen/FBICrime_2019.html)
+
+# R Data Exercises
+
+### Intro to R - NICAR
+- [Link](https://profrobwells.github.io/Guest_Lectures/Intro_To_R/R1_Intro-to-R.html)
+
+### R Markdown for Stanford, Feb 2020
+- [Link](https://profrobwells.github.io/HomelessSP2020/SF_311_Calls_UofA.html)
+
+### Homeless Children, Feb 25
+- [Link](https://profrobwells.github.io/HomelessSP2020/Homeless_Children_Feb_25_2020.html)
+
+### Custom Sentiment and Bing Sentiments, May 21
+- [Link](https://profrobwells.github.io/ChinaFDI/Sentiment_Index_5-14-2020.html)
+
+### Using R to Scrape Twitter, Spring 2019
+- [Link](https://profrobwells.github.io/Data-Analysis-Class-Jour-405v-5003/Spring_2019_Adv_Reporting_Jan_4_2019.html)
+
+
+
+# File Operations
+
+You can load data from CSV and Excel files:
+
+data <- read_csv("data.csv")
+data <- read_excel("data.xlsx")
+files <- list.files(here::here("black_press"), pattern = "*.txt") %>%
+  as.data.frame() %>%
+  rename(filename = 1) %>%
+  filter(!str_detect(filename, "_bak"))
+  
+Reorder columns according to their number
+Xtopcases <- Xtopcases[c(2,3,1)]
+
+### compare two dfs
+summary(comparedf(df1, df2))
+
+
+### Boolean Operations
+& means AND, | means OR, and ! means NOT in Boolean logic.
+
+### Joining Data Frames              
+
+newtable <- inner_join(table1, table2, by=c("fieldname"="fieldname"))
+
+
+# Data Cleaning
+as.character converts to a text string.
+as.numeric converts to a number that may include decimal fractions (dbl).
+as.factor converts to a categorical variable.
+as.integer converts to an integer
+as.Date converts to a date
+as.POSIXct converts to a full date and timestamp.
+So this code will convert alert_date codes to text:
+
+
+For text cleaning, you can use the textclean package.
+https://cran.r-project.org/web/packages/textclean/textclean.pdf
+
+
+### Milwaukee Evictions
+- [Code on GitHub](https://github.com/profrobwells/HomelessSP2020/blob/master/Milwaukee_Evictions_8-21-2020.Rmd)
+
+### Data and String Manipulation
+
+Converting Character Strings to Numeric
+data$column <- as.numeric(data$column)
+
+
+Converting Character Strings to Numeric
+library(dplyr)
+
+Using glimpse function from Tibble or Dplyr
+dplyr::glimpse(StudentLoans)
+tibble::glimpse(StudentLoans)
+
+Converting specific columns to numeric
+colnames(StudentLoans[10:102])
+StudentLoans[10:102] <- lapply(StudentLoans[10:102], as.numeric)
+
+mutate_at(3, ~replace_na(., 0)) %>% 
+
+### Removing Special Characters
+Remove special characters from earnings$TOTAL.EARNINGS column
+earnings$TOTAL.EARNINGS <- gsub("\\$", "", earnings$TOTAL.EARNINGS)
+
+Remove specific stray characters from AOC4 columns
+AOC4$tag2 <- str_replace_all(AOC4$tag2, pattern = fixed('")'), replacement = fixed(''))
+AOC4$tag3 <- str_replace_all(AOC4$tag3, pattern = fixed('")'), replacement = fixed(''))
+AOC4$tag4 <- str_replace_all(AOC4$tag4, pattern = fixed('")'), replacement = fixed(''))
+
+Remove brackets from AOC4$tag1
+AOC4$tag1 <- gsub("[()]", "", AOC4$tag1)
+
+
+### Replacing specific strings 
+using str_replace_all
+SF$disposition1 <- str_replace_all(SF$disposition1, pattern = fixed('ABA'), replacement = fixed('Abated'))
+SF$disposition1 <- str_replace_all(SF$disposition1, pattern = fixed('ADM'), replacement = fixed('Admonished'))
+
+### mutate and case_when to rename
+cleaned_data <- cleaned_data %>%
+  mutate(cleaned_company = tolower(company_name)) %>%
+  mutate(cleaned_company = case_when(
+    str_detect(cleaned_company, "roehm") ~ "roehm_america",
+    str_detect(cleaned_company, "tyson") ~ "tyson",
+    # ... Add more cases here ...
+    TRUE ~ cleaned_company
+  ))
+
+cleaned_data <- cleaned_data %>%
+  mutate(cleaned_company = tolower(company_name)) %>%
+  #mutate(cleaned_company = str_remove("'",cleaned)) %>%
+  mutate(cleaned_company = case_when(
+    str_detect(cleaned_company, "roehm") ~ "roehm_america",
+    str_detect(cleaned_company, "tyson") ~ "tyson",
+    str_detect(cleaned_company, "agra") ~ "con_agra",
+    str_detect(cleaned_company, "george") ~ "georges_poultry",
+    str_detect(cleaned_company, "ozark") ~ "georges_poultry",
+    str_detect(cleaned_company, "pilgrim") ~ "pilgrims_pride",
+    str_detect(cleaned_company, "saracen") ~ "saracen_casino_construction",
+    str_detect(cleaned_company, "triumph") ~ "triumph_airborne_structures",
+    str_detect(cleaned_company, "belleville") ~ "belleville_boot",
+    str_detect(cleaned_company, "wal") ~ "walmart",
+    TRUE ~ cleaned_company
+  ))
+
+
+Rename specific strings. Example:
+  mutate_at(3, ~replace_na(.,0)) %>% 
+
+
+str_replace_all(test.vector, pattern=fixed('-'), replacement=fixed(':') )
+https://dereksonderegger.github.io/570L/13-string-manipulation.html
+
+We can do this to replace ABA with "Abated"
+SF$disposition1 <- str_replace_all(SF$disposition1, pattern=fixed('ABA'), replacement=fixed('Abated') )
+Again with ADM
+SF$disposition1 <- str_replace_all(SF$disposition1, pattern=fixed('ADM'), replacement=fixed('Admonished') )
+
+### Dates
+convert alert_date to text
+ca_discipline$alert_date <- as.character(ca_discipline$alert_date)
+
+autoname a date
+reportdate <- "2021-08-30"
+schoolname <- paste("schools_", reportdate,".csv",sep="")
+write.csv(schoolraw, file=schoolname)
+
+A little cleaner using standard dplyr
+   filter(between(year, 2015, 2017)) 
+
+
+Filter between dates
+vaxjuly <- vaccine %>% filter(between(Date2, as.Date("2021-07-01"), as.Date("2021-07-31")))
+
+Filter for specific dates
+Nov_1_14_ALL <- master %>% 
+  filter(mydate == "2021-11-01" | mydate == "2021-11-14") %>% 
+  filter(!county_nam =="Arkansas_all_counties") %>% 
+  arrange(county_nam)
+  
+  
+### NAs and Missing Values
+complete_rows <- na.omit(dataframe)
+incomplete_rows <- dataframe[!complete.cases(dataframe), ]
+
+sum(column_with_NAs, na.rm = TRUE)
+mean(column_with_NAs, na.rm = TRUE)
+
+Dealing with Missing Values
+complete.cases <- na.omit(bigrams_1860_1920)
+
+Listing rows with missing values
+StudentLoans[!complete.cases(StudentLoans)]
+
+Calculating statistics on columns with missing values
+sum(StudentLoans$UGDS_WHITE, na.rm = TRUE)
+mean(StudentLoans$TUITIONFEE_IN, na.rm = TRUE)
+
+
+### Clean, Remove Punctuation
+data$column <- str_trim(data$column)
+data$column <- gsub("[[:punct:]]", "", data$column)
+
+data$column <- gsub("[[:punct:]]", "", data$column)
+data$column <- gsub("[[:space:]]", "", data$column)
+
+Trimming and Cleaning Data
+p$defendant_one <- str_trim(p$defendant_one)
+p$plaintiff_one <- gsub("[[:punct:]]", "", p$plaintiff_one)
+
+This cleans out all instances of c( - need to refine
+AOC4$tag1 <- dplyr::mutate_if(tibble::as_tibble(AOC4$tag1), 
+                                is.character, 
+                                stringr::str_replace_all, pattern = "["c(""]", replacement = "")
+
+
+
+
+### Parse and Split Data
+library(tidyr)
+data <- separate(data, col = column1, into = c("column2", "column3"), sep = " ")
+data$column2 <- gsub("[[:punct:]]", "", data$column2)
+
+library(tidyr)
+SF <- separate(data = SF, col = crime1, into = c("crime2", "crime3", "crime4"), sep = " ", extra = "merge", fill = "right")
+SF$crime2 <- gsub("[[:punct:]]", "", SF$crime2)
+
+
+tri white space
+https://stringr.tidyverse.org/reference/str_trim.html
+str_trim(string, side = c("both", "left", "right"))
+
+# Filters
+filtered_data <- data %>%
+  filter(column_name > 10)
+  
+add a filter to get just women who died
+note the double equal sign on the filter 
+opiatedata%>%select(LASTNAME, DEATHDATE, GENDER, RACE)%>%filter(GENDER=="F")
+
+filter for two operators
+df3 <- filter(murders, Relationship_label %in% c("Husband", "Boyfriend")
+
+filter for two operators
+SF %>% 
+  filter(disposition == "ND" | disposition == "GOA") %>% 
+  count(disposition) %>% 
+  arrange(desc(n))
+
+
+filter to exclude something using != operator
+murders_filtered <- filter(murders, OffAge!=999)
+
+
+x <- population1 %>% 
+filter(!(county == "Arkansas (All counties)"))
+ 
+ 
+Create a table with tweets that mention Trump
+Coulter_Trump <- filter(Coulter, grepl ("Trump", text)) %>% 
+  select(created_at, text, is_retweet, hashtags, urls_expanded_url)
+
+Extract the entries with . Note this is a metacharacter that must be escaped.
+bb <- c("Once", "the", "3rd", "**alarm**", "sounds", "...")
+grep("\\.", bb, value=T)
+
+need to search by wildcards
+exchange2 <- Bigrams_BF_all %>% 
+  filter(word1=="exchange" | word1=="currency" | word2=="currency" | word1==“manipulat?!XXX")
+
+Filter out some garbage
+junk <- c("http", "mt", "rt") 
+
+filter no values
+grand_jury %>% group_by(Code) %>% 
+  filter(!Code=="") %>% 
+  summarise(count=n())   %>% 
+  distinct() %>% 
+  arrange(desc(count)) 
+
+### Grep
+`grep` practice
+grepl to find specific strings
+xy <- filter(df, grepl ("homeless_complaint", crime_total))
+
+Normalize A1
+ 26	A.01	32
+ 27	A.1	739
+ 1	1	9
+xyz <- filter(BF, grepl("^A.01$|^1$|^A.1$", Page))
+Replaced 780
+BF2$z <- str_replace_all(BF2$Page, ('^A.01$|^1$|^A.1$'), replacement=fixed('A1') )
+9 obs with the standalone 1s
+xyz <- filter(BF, grepl("^1$", Page))
+Replaced
+BF2$z <- str_replace_all(BF2$Page, ('^1$'), replacement=fixed('A1') )
+32 obs with the standalone A.01
+xyz <- filter(BF, grepl("^A.01$", Page))
+2647
+xyz <- filter(BF, grepl("1", Page))
+
+43
+xyz <- filter(BF, grepl("^1", Page))
+
+33 but no standalone 1s
+xyz <- filter(BF, grepl("^1[^0,2-9]", Page))
+
+38 obs with the standalone 1s
+xyz <- filter(BF, grepl("\\b^1\\b", Page))
+  
+### Summarizing Data
+
+summary_data <- data %>%
+  group_by(category) %>%
+  summarise(mean_value = mean(value))
+  
+  
+# Data Transformations 
+
+### Transforming Years to Decades
+Create a new column 'decade' by extracting the decade from the 'year' column
+mob$decade <- paste0(substr(mob$year, 0, 3), "0")
+
+### Lookup table to translate codes to English
+dispo_lkup <- c(
+  ABA = "Abated", ADM = "Admonish", ADV = "Advised", 
+  ARR = "Arrest", CAN = "Cancel", CSA = "CPSA", 
+  CIT = "Cited", CRM = "Criminal", GOA = "Gone", 
+  HAN = "Handled", NCR = "No_Criminal", ND = "No_Dispo", 
+  NOM = "No_Merit", PAS = "PlaceSecure", REP = "Report", 
+  SFD = "Medical", UTL = "Unfound", VAS = "Vehicle_Secure", '22' = "Cancel"
+)
+
+Translate 'disposition' values using the lookup table
+SF$disposition1 <- as.character(dispo_lkup[SF$disposition])
+
+Data Management
+### Mutate 
+Create new column(s) in the data, or change existing column(s).
+mutate() adds new variables and preserves existing;
+
+mtcars <- as.data.frame(mtcars)
+View(mtcars)
+
+mtcars2 <- mtcars %>% as_tibble() %>% mutate(
+  cyl2 = cyl * 2,
+  cyl4 = cyl2 * 2
+)
+
+window functions are useful for grouped mutates
+mtcars %>%
+  group_by(cyl) %>%
+  mutate(rank = min_rank(desc(mpg)))
+
+Use mutate to add together the percentages of low-wage households
+ArkCo_Income_2017 <- ArkCo_Income_2017 %>%
+  replace(is.na(.), 0) %>%
+  mutate(Low_Wage_Households = rowSums(.[5:7]))
+  
+
+# Columns and Rows
+df <- as.data.frame(matrix)
+View(data.frame(df$column1, df$column2))
+
+### Delete Columns
+df <- df[-c(2, 4, 6), ]
+df <- FDI[-c(6, 7, 11:13), ]
+
+Xtopcases <- subset(Xtopcases, select =-County_Name)
+data <- subset(data, select = -badcol)
+hospital_master1 <- hospital_master1[ -c(1) ]
+
+### Rows - cut rows
+hospital_master1 <- slice(hospital_master1, -c(1))
+ hospital_master1[3:9] <- lapply(hospital_master1[3:9], as.numeric)
+ hospital_master1$date <- mdy(hospital_master1$date)
+
+
+removing rows with missing values
+newdata <- ArkCensus[-c(1, 3, 5), ]
+
+
+
+### View a specific row in R
+lottery_info2[183,]
+
+Delete Columns
+Cut Columns
+df <- FDI[ -c(6,7,11:13) ]
+Cut rows from df
+
+twodays <- slice(twodays, -c(1))
+Renaming Columns and Replacing Values
+
+### Rename Columns
+
+x <- master2 %>% 
+  rename(
+    NEW NAME = OLD NAME,
+    County_Name = county_nam,
+    Total_Negative_Test = total_neg_test)
+
+
+Fixing column names one at a time
+colnames(ArkCo_Income_2017)[4] <- "household_income"
+colnames(ArkCo_Income_2017)[4] <- "households_estimate_total"
+
+
+another method Rename a specific column
+colnames(ArkCensus)[5] <- "BaseEstimate"
+View(ArkCensus)
+
+Rename a specific value in a data frame
+Replace the data in a field based on equality to some value
+SchoolData$Grade[SchoolData$Grade == 5] <- "Grade Five"
+x$type3[x$type3 == TRUE] <- "News"
+x$type3[x$type3 == FALSE] <- "Opinion"
+
+colnames(Income)[15] <- "Sum 74+75"
+colnames(Income)[11] <- "VC82"
+names(bostonsnow)[2] <- "TotalSnow"
+
+### Reorder columns according to their number
+Xtopcases <- Xtopcases[c(2,3,1)]
+
+
+### Deleting First Row Headers
+Reimport the data and skip the first row
+read.csv(.... , skip=1)
+ArkCo_Income_2017 <- rio::import("Data/ArkCo_Income_2017.csv", skip = 1)
+View(ArkCo_Income_2017)
+
+library(janitor)
+ArkCo_Income_2017 <- janitor::clean_names(ArkCo_Income_2017)
+View(ArkCo_Income_2017)
+
+
+# Pivot_wider
+https://tidyr.tidyverse.org/reference/pivot_wider.html
+
+fish_encounters %>%
+  pivot_wider(names_from = station, values_from = seen)
+
+baltcity_income2 <- baltcity_income %>% 
+  select(!(moe)) %>% 
+  pivot_wider(names_from = year, values_from = estimate)
+  
+ payouts <- payouts %>% 
+  filter(!fiscal_year=="TOTAL") %>% 
+  drop_na 
+
+
+### Names to headers
+names(lottery_vendors) <- lottery_vendors[1,]
+lottery_vendors <- lottery_vendors[-1,]
+
+library(tidyr)
+
+Population$Total <- as.numeric(Population$Total)
+Population$Total <- gsub(",", "", Population$Total)
+
+population2 <- Population %>% 
+  pivot_longer(names_to ="type", 
+               values_to = "amount",
+               cols = 2:7)
+
+
+longdata <- widedata %>%
+  pivot_longer(names_to = "survey",
+               values_to= "wiss",
+               cols = 2:5,
+              )
+names_to = "income", values_to = "count"
+
+# Creating Summary Tables
+Summarizing Data by Group
+Counting Rows by Group
+
+Count rows with missing values in StudentLoans
+StudentLoans[!complete.cases(StudentLoans), ]
+
+
+Build a simple summary table
+count <- cos_sum_sentiment %>% 
+  select(pattern, article_nmbr) %>% 
+         group_by(pattern) %>% 
+         count(pattern) %>% 
+         ungroup()
+         
+count multiple values in a table
+hanged_by1 %>% 
+group_by(Mob_violence_Y_N, `Citizen_violence_Y-N`) %>% 
+summarise(count=n())
+
+
+Table of articles by publication
+total <- test2 %>%
+  group_by(Pub) %>% 
+  mutate(total_articles = n()) %>% 
+  ungroup() %>% 
+  distinct(Pub, total_articles) %>% 
+  arrange(desc(total_articles))
+  
+
+Build Table of Common Wells Words 
+CommonWellsWords <- tweet_words %>%
+  count(word) %>%
+  filter(sum(n) >= 5) %>%
+  ungroup() %>% 
+  arrange(desc(n))
+  
+  Top_People <- select(Coulter2, created_at, text, is_retweet, mentions_screen_name) %>% 
+  mutate(PeopleCount = mentions_screen_name) %>% 
+  count(PeopleCount) %>%
+  drop_na() %>% 
+  top_n(15, n) %>%
+  arrange(desc(n))
+
+Summary table by year
+WSJ_table_sentiment <- BF_WSJ_sentiment %>% 
+  select(year, score) %>% 
+  group_by(year) %>% 
+  summarise(sentiment = sum(score)) 
+
+ Here's an elegant way to create a Tweets by Month, Year Table
+Coulter_y_Month <- Coulter %>%
+  select(created_at, yearmon, text, screen_name) %>%   
+  group_by(yearmon) %>%
+  count(yearmon)
+
+rbind
+Create Name Label
+Trump_bigram_counts1$Name <- "Trump"
+Pelosi_bigram_counts1$Name <- "Pelosi"
+
+### Using RBind, connect the 2 charts
+Trump_Pelosi_Bigrams <- rbind(Trump_bigram_counts1, Pelosi_bigram_counts1)
+
+bind_rows(..., .id = NULL)
+bind_cols(
+  ...,
+  .name_repair = c("unique", "universal", "check_unique", "minimal")
+)
+
+### Summarize
+filter(df, grepl ("homeless_complaint", crime_total)) %>% 
+  count(crime_id) %>% 
+  summarise(total = sum(n))
+  
+colSums(people[,-1])
+
+# Math and Stats
+Good R Tutorial with Basic Statistics
+https://www.princeton.edu/~otorres/sessions/s2r.pdf
+
+library(janitor)
+total %>%
+  adorn_totals("row")
+
+
+### Calculate mean, median, and standard deviation of Per10000 column
+mean_val <- mean(ArkCrime2017$Per10000, na.rm = TRUE)
+median_val <- median(ArkCrime2017$Per10000, na.rm = TRUE)
+sd_val <- sd(ArkCrime2017$Per10000, na.rm = TRUE)
+
+arrange Sort the data, by size for continuous variables, by date, or alphabetically.
+group_by Group the data by a categorical variable.
+summarize Summarize, or aggregate (for each group if following group_by). Often used in conjunction with functions including:
+mean(x) Calculate the mean, or average, for variable x.
+median(x) Calculate the median.
+max(x) Find the maximum value.
+min(x) Find the minimum value.
+sum(x) Add all the values together.
+n() Count the number of records. Here there isn’t a variable in the brackets of the function, because the number of records applies to all variables.
+n_distinct(x) Count the number of unique values in variable x.
+mutate Create new column(s) in the data, or change existing column(s).
+rename Rename column(s).
+bind_rows Merge two data frames into one, combining data from columns with the same name.
+
+Math Functions
+median()
+summary()
+TotalViolent2017 <- sum(Census$Violent_Crime)
+AvgViolent2017 <- mean(Census$Violent_Crime)
+MedianViolent2017 <- median(Census$Violent_Crime)
+
+Doing math on columns with missing values
+
+sum(StudentLoans$UGDS_WHITE, na.rm=TRUE)
+mean(StudentLoans$TUITIONFEE_IN, na.rm=TRUE)
+
+Standard Deviation
+sd(Census$Per10000, na.rm=TRUE)
+
+
+percent_change <- function(first_number, second_number) {
+  pc <- (second_number-first_number)/first_number*100
+  return(pc)
+}
+
+percent_change(100,150)
+
+percent_change <- function(first_number, second_number) {
+  pc <- (second_number-first_number)/first_number*100
+  return(pc)
+}
+
+dataset$New.Column <- dataset$Column subtracted by dataset$Another.Column
+Crime$Murder.Robbery <- Crime$Murder + Crime$Robbery
+
+percent_change(100,150)
+[1] 50
+This is what’s happening in the code above:
+* percent_change is the name of the function, and assigned to it is the function function()
+* Two variables are necessary to be passed to this function, first_number and second_number
+* A new object pc is created using some math calculating percent change from the two variables passed to it
+* the function return() assigns the result of the math to percent_change from the first line
+Build enough functions and you can save them as your own package.
+
+Standard Deviation - and it knocks out NAs
+sd(ArkCrime2017$Per10000, na.rm=TRUE)
+
+Create a subset chart to show the top 10 by Pct Change
+TopTags <- filter(AOC_table, (Freq > 2) & (Freq < 36))
+
+### Format into percents
+install.packages("formattable")
+library(formattable)
+
+ArkCensus$Pct2017 <- percent(ArkCensus$Pct2017)
+
+tuskegee <- tuskegee %>% 
+  mutate(pct_lynched_total = round(total/4743*100, 1))
+  
+    mutate(pct_total = formattable::percent(n/y, 1))
+
+comma in thousands
+format(round(as.numeric(1000.64), 1), nsmall=1, big.mark=",")  # 1,000.6
+
+x %>% 
+  mutate(pct_total = format(round(n/y*100, 1), nsmall=1))
+
+View(ArkCensus)
+
+Mean Bing Score by Year & Pct Chg
+Mean_Bing <- EF_type2 %>%
+  filter(year!=2019) %>%
+  group_by(year) %>% 
+  summarize(mean = mean(score)) %>% 
+  mutate(adj_mean = (mean)+10) %>% 
+  mutate(pct_change = (adj_mean/lag(adj_mean)-1) * 100)
+  
+quantile(Immigrants$ForeignPer, c(0.1, 0.2, 0.3, 0.4,0.5, 0.6, 0.7, 0.8, 0.9), na.rm=TRUE)
+10%        20%        30%        40%        50%        60%        70%        80% 
+0.01815276 0.04795991 0.08415216 0.12211798 0.16310981 0.21134868 0.27006931 0.34238683 
+90% 
+0.41473971   
+
+5: Create a new crime rate column with violent crime per 10,000 residents   
+
+ArkCrime2017$CrimePer10000 <- (ArkCrime2017$violent_crime / ArkCrime2017$population) *10000 
+View(ArkCrime2017)
+
+6: Sort the table descending with the highest crime rate on top   
+
+Sort by largest percentage change
+ArkCrime2017 <- ArkCrime2017[order(-ArkCrime2017$CrimePer10000),]
+
+OR
+ArkCrime2017a <- ArkCrime2017%>%select(city, CrimePer10000)%>%arrange(desc(CrimePer10000))
+
+
+7: Create separate table with just the top five counties' crime rate
+Top5 <- ArkCrime2017 %>% select(city, CrimePer10000) %>% filter(CrimePer10000 >= 163)
+View(Top5)  
+
+
+### Top n Slicemax
+
+ md_race %>% 
+  select(place, x2020_hispanic) %>% 
+  slice_max(x2020_hispanic, n = 5)
+
+
+df <- ArkCensus %>%
+  top_n(10, -Median_Househ_Income) %>%
+  arrange(Median_Househ_Income)
+  
+
+Create separate table with just the top five counties' crime rate: dplyr has a "top_n" function that i find handy
+Top_5_county_rates <- Arkansas_Crime %>%
+  select(County, violent_crime_rate_per10k) %>%
+  top_n(5, violent_crime_rate_per10k) %>%
+  arrange(desc(violent_crime_rate_per10k))
+
+# Data Visualization
+Explore data visualization in R.
+
+### Basic Plots
+Create basic plots using base R functions:
+
+hist(data$variable)
+boxplot(data$variable)
+barplot(data$variable)
+
+ggplot2
+Create advanced plots with ggplot2:
+ggplot(data, aes(x = variable1, y = variable2)) +
+  geom_point()
+
+ggplot(data, aes(x = category, y = value)) +
+  geom_bar(stat = "identity")
+
+
+
+
+### Advanced Visualization
+
+Change the legend label %>% %>% %>% %>% 
+ labs(fill = "Publication Name") +
+ 
+Change angle of x axis
+  theme(axis.text.x = element_text(angle=90)) +
+  
+Formatting options explained well
+https://www.datanovia.com/en/blog/ggplot-legend-title-position-and-labels/#remove-legend
+
+Remove legend:
+p + theme(legend.position = "none")
+
+
+Charting
+https://www.rdocumentation.org/packages/ggplot2/versions/1.0.1/topics/geom_bar
+http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/
+  
+
+Learn about advanced visualization techniques.
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+
+
+
+Figure 10: Bing regional sentiment chart
+Labels with numbers scaled to percent
+
+
+ggplot(bing_regions2,aes(x = region, y = percent,fill = sentiment)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent, limits=c(0, 1)) +
+  geom_text(aes(label = scales::percent(percent)), size = 4) +
+  labs(title = "Regional Newspaper Sentiment in Lynching News Coverage",
+       subtitle = "Based in 846 extracted articles, 1837-1960",
+       caption = "Bing Sentiment analysis. Graphic by Rob Wells, 1-06-2023",
+       y="Sentiment",
+       x="Red = Negative, Blue = Positive")
+
+Color and Size
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color =manufacturer, size=manufacturer))
+
+Z_AR_PCT %>% 
+  filter(Pct_Chg > .13) %>% 
+  ggplot(aes(x = reorder(region_name, Pct_Chg), y = Pct_Chg, fill = Pct_Chg)) +
+  geom_col(position = "dodge", show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  geom_text(aes(label = Pct_Chg), hjust = -.5, size = 2) +
+  scale_y_continuous(limits=c(0, .45),labels = scales::percent) +
+  coord_flip() +
+  labs(title = "Arkansas Real Estate Values, 2010-2019",
+       subtitle = "Zillow housing index",
+       caption = "Graphic by Rob Wells, 12-22-19",
+       y="Index, Pct Change",
+       x="City")
+
+Formatting ggplot
+http://www.sthda.com/english/wiki/ggplot2-axis-ticks-a-guide-to-customize-tick-marks-and-labels
+
+News only line
+EF_type_sent %>%
+  filter(type=="News") %>% 
+  filter(year!=2019) %>%
+  group_by(year, type) %>% 
+  summarize(mean = mean(score))  %>% 
+  ggplot(aes(x = year, y = mean)) +
+  geom_smooth(se=FALSE)+
+  scale_x_continuous(breaks=c(2000:2018)) +
+  theme(axis.text.x = element_text(angle=90)) +
+  #scale_x_date() +
+  #scale_y_reverse() +
+  #coord_flip()  +
+  labs(title = "Sentiment News Articles- China Economic News", 
+       subtitle = "Sentiment Score: NYT, WSJ, LAT, WP, IUT: Economic Filter, 2000-2018.",
+       caption = "Bing sentiment dictionary. Source: ProQuest. Graphic by Rob Wells",
+       x="Year",
+       y="Sentiment score")
+
+
+Mean score per year
+EF_type_sent %>% 
+  filter(year!=2019) %>%
+  filter(type=="Opinion") %>% 
+  group_by(year, Pub) %>% 
+  summarize(mean = mean(score))  %>% 
+  ggplot(aes(x= year, y= mean, fill= Pub)) +
+  geom_bar(stat="identity", width=.5, position = "dodge") +
+  scale_y_reverse() +
+  coord_flip()  +
+  labs(title = "Sentiment Of Opinion Articles: China Economic News", 
+       subtitle = "Sentiment Score: NYT, WSJ, LAT, WP, IUT: Economic Filter, 2000-2018.",
+       caption = "Bing sentiment dictionary. Source: ProQuest. Graphic by Rob Wells",
+       x="Year",
+       y="Average Sentiment Score / Year")  
+
+
+Format the x axis scale
+Wells note
+I added these lines
+  scale_x_continuous(breaks=c(2007:2017)) +
+  scale_y_continuous(limits=c(0, .6),labels = scales::percent) +
+
+chart1 <- homelessdata %>% 
+  ggplot(aes(x = year, y = pct_homeless, fill = pct_homeless)) +
+geom_col(position = "dodge", show.legend = FALSE) +
+   geom_bar(stat="identity", fill="steelblue")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 2)) +
+  geom_text(aes(label = pct_homeless), vjust=-0.3, size = 3) +
+  scale_x_continuous(breaks=c(2009, 2011, 2013, 2015, 2017)) +
+  scale_y_continuous(limits=c(0, .6),labels = scales::percent) +
+  labs(title = "Percent Population Change 2009-2017",
+       subtitle = "NWA Homeless",
+       caption = "Graphic by Brooke Tomlin, 4-20-2020",
+       y="Percent",
+       x="Year")
+
+### Adjusting Scales
+
+ggplot(data, aes(x = year, y = value)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(2000, 2020, by = 2))
+
+deaths_by_year_chart <- ggplot(deaths_by_year, aes(x = deathyr, y = numdeaths)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +     #this makes it a horizontal bar chart instead of vertical
+  labs(title = "Number of opiate deaths by year in MN", 
+       subtitle = "2006-2015",
+       caption = "Graphic by MaryJo Webster",
+       x="Year",
+       y="Number of deaths")
+
+### Percentage change chart  
+Top5Chart <- ggplot(Top5, aes(x = CrimePer10000, y=fct_reorder(city, CrimePer10000, desc=TRUE))) +
+  geom_col () +
+  scale_x_continuous(labels = scales::percent) +
+  labs(title = "Arkansas Cities With Top Crime Rates Per 10,000, 2017", 
+       subtitle = "FBI Uniform Crime Report Data: https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/tables/table-8/table-8-state-cuts/arkansas.xls",
+       caption = "Graphic by Rob Wells",
+       x="Crime Rate Per 10,000 People",
+       y="City")
+
+Sort a chart
+library(ggplot2)
+Top5Chart <- ggplot(Top5, aes(x = reorder(city, -CrimePer10000), y = CrimePer10000))  +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Arkansas Cities With Top Crime Rates Per 10,000", 
+       subtitle = "FBI Uniform Crime Report Data, 2017",
+       caption = "Graphic by Rob Wells",
+       x="City",
+       y="Crime Rate Per 10,000 People")
+plot(Top5Chart)
+
+### Format percentages
+  scale_y_continuous(labels = scales::percent) +
+
+### Colors
+Katie Serrano
+ColorTop5Chart <- ggplot(Top5, aes(x = reorder(city, -CrimePer10000), y = CrimePer10000, color = city, fill=city))  +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Arkansas Cities With Top Crime Rates Per 10,000", 
+       subtitle = "FBI Uniform Crime Report Data, 2017",
+       caption = "Graphic by Rob Wells",
+       x="City",
+       y="Crime Rate Per 10,000 People")
+plot(ColorTop5Chart)
+
+### Adjust fonts
+Adjust the size of the x and y axis fonts
+ggplot(trade_war)+
+  aes(x = year, y = n, fill = n)+
+  scale_y_continuous(labels = scales::comma) +
+  geom_col(position = "dodge", show.legend = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size=8)) +
+  theme(axis.title.y = element_text(size = 8)) +
+  theme(axis.title.x = element_text(size = 8)) +
+  labs(title = "Frequency of 'Trade War' in News Coverage, 2000-2019",
+       subtitle = "Search 5,204 articles, NYT, WP, WSJ, NYT, Inside US Trade 2000-2019",
+       caption = "Source: ProQuest. Graphic by Rob Wells & Austin Wilkins. 2-22-2020",
+       x="Year",
+       y="Frequency of 'Trade War' in News Coverage")
+
+### Captions
+https://www.datanovia.com/en/blog/ggplot-title-subtitle-and-caption/
+Put a break in a caption: \n
+     caption = "Cos. $2 bln U.S. investment. 353 Articles Source: ProQuest. \n Graphic by Rob Wells & Austin Wilkins. 3-19-2020",
+
+
+### Side by Side Column Chart
+ggplot(dispo, aes(year, n, fill = disposition)) +
+  geom_col(position = "dodge")
+
+### Two graphs
+solution: https://stackoverflow.com/questions/3099219/ggplot-with-2-y-axes-on-each-side-and-different-scales
+ggplot() + 
+  geom_bar(mapping = aes(x = Fay_Zillow$Year, y = Fay_Zillow$total_enroll_pct_change), stat = "identity", fill = "pink") +
+  geom_line(mapping = aes(x = Fay_Zillow$Year, y = Fay_Zillow$zillow_pct_change), size = 2, color = "blue") + 
+  #scale_x_date(name = "Day", labels = NULL) +
+  scale_y_continuous(name = "Enroll Pct Change", 
+                     sec.axis = sec_axis(~./1, name = "Zillow Pct Change")) + 
+  theme(
+    axis.title.y = element_text(color = "pink"),
+    axis.title.y.right = element_text(color = "blue"))
+
+
+### Dual Axis
+coeff <- 9.8
+
+ggplot(e, aes(x=year)) +
+  geom_line(aes(y= total_lynchings), size=2, color = "red") +
+  geom_line(aes(y=(lynchpages_per1000_pages*9.8)), size=1, color = "blue") +
+  scale_y_continuous(
+    name = "Total Lynchings (Red)",
+    sec.axis = sec_axis(~.*1, name="News Coverage Ratio (Blue)")
+  ) +
+  scale_x_continuous(labels = c(seq(1789, 1963, 20)), breaks = seq(1789, 1963, 20)) +
+  labs(title = "Lynching News to Overall News Coverage, 1789-1963",
+       subtitle= "Each Page of Lynching News per 1000 Overall News Pages",
+       caption= "Lynchings: Seguin-Tolnay-Beck. News: Our search divided by total Chronicling America pages per year. 
+       Graphic by Rob Wells",
+       x = "Year")
+
+ggsave("lynchings_total_news_sept27.png", device = "png", width = 9, height = 6, dpi = 800)
+
+### Page Placement
+pageplacement %>% 
+  top_n(10,pct) %>% 
+  ggplot(aes(x = page, y = pct, fill = pct)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks=c(1:15)) +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(aes(label= pct, x= page, y= pct), hjust=.5, vjust=0) +
+  labs(title = "Page Placement, Lynching Coverage, 1836-1963", 
+       subtitle = "Page Number Placement of Lynching Stories",
+       caption = "Page 1 stories were 28% of 22,280 pages. Graphic by Rob Wells, 7/7/2022",
+       y="Pct of Pages",
+       x="Page Number")
+
+### State Comparison
+ggplot(data= StateData) +
+  geom_bar(mapping = aes(x= Year, y= NWA), stat="identity", fill = "green") +
+  geom_line(mapping= aes(x= Year, y= State), stat="identity", color="blue", fill= "blue") +
+  scale_x_continuous(breaks=c(2007:2019), name = "Year") +
+  scale_y_continuous(name = "Number of Homeless Individuals") +
+  geom_text(aes(label= NWA, x= Year, y= NWA), hjust=.5, vjust=0) +
+  geom_text(aes(label= State, x= Year, y= State), hjust=.5, vjust=0)+
+  geom_text(label= "Arkansas",
+            x= 2007, y= 2850) +
+   geom_text(label= "Northwest Arkansas",
+            x= 2008, y= 750) +
+  labs(title = "Homeless Point in Time Counts for Northwest Arkansas and the State of Arkansas",
+       subtitle= "Data from HUD Exchange",
+       caption= "Graphic by Michael Adkison",
+       y = "Reported Number of Homeless Individuals, 4-21-2020",
+       x = "Year")
+
+### Bing regional sentiment chart
+
+labels with numbers scaled to percent
+
+ggplot(bing_regions2,aes(x = region, y = percent,fill = sentiment)) +
+  geom_col(position = "dodge") + 
+  theme(legend.position = "none") +
+  scale_y_continuous(labels = scales::percent, limits=c(0, 1)) +
+  geom_text(aes(label = scales::percent(percent)), size = 4) +
+   labs(title = "Regional Newspaper Sentiment in Lynching News Coverage",
+       subtitle = "Based in 846 extracted articles, 1837-1960",
+       caption = "Bing Sentiment analysis. Graphic by Rob Wells, 1-06-2023",
+       y="Sentiment",
+       x="Red = Negative, Blue = Positive")
+
+### Horizontal bar chart
+Types2 %>% 
+  filter(!is.na(crime2)) %>% 
+  ggplot(aes(x = reorder(crime2, n), y = n, fill=n)) + 
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  geom_text(aes(label = n), hjust = -.3, size = 3) +
+  scale_y_continuous(limits=c(0, 150000)) +
+  coord_flip() +    #this makes it a horizontal bar chart instead of vertical
+  labs(title = "Top Homeless Complaints, San Francisco", 
+       subtitle = "311 Call Data, 3/2016-11/2019",
+       caption = "Graphic by Wells",
+       y="Number of Calls",
+       x="Complaint")
+
+### Save Hi Res Image
+ggsave("Adkison_State_Homeless.png", device = "png", width = 9, height = 6, dpi = 800)
+
+
+### formatting Resources
+https://www.rdocumentation.org/packages/ggplot2/versions/1.0.1/topics/geom_bar
+http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/
+https://r4ds.had.co.nz/
+https://simplystatistics.org/post/
+
+
+# Images - Embedding - Formatting                  
+
+Week 5 Publishing
+http://learn.r-journalism.com/en/publishing/
+
+You can also embed plots, for example:
+
+r pressure, echo=FALSE
+plot(pressure)
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+Images
+Standard Image insert  -- text can go in brackets []
+![ ](Images-Sabew/Bea - GDP1.jpeg)#
+
+Size your jpegs:
+<img src="Images-Sabew/Bea logo.jpg" width="200" height="200" />
+<img src="Images-Sabew/UARK Logo vert NEW copy.jpg" width="200" height="200" />
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+
+R Markdown Formatting
+Another easy way to do this is to just use HTML tags. Adding <br> will give a single line break and I've used that when, for whatever reason, using the  (two-space indentation) is ignored.
+
+https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf
+
+library(rmarkdown)
+render("input.Rmd", pdf_document())
+
+ I Can't Leave Well Enough Alone
+{r, echo=FALSE}
+     knitr::include_graphics('Dplyr3.png')
+
+
+add local image file in R presentation
+
+https://stackoverflow.com/questions/31886610/add-local-image-file-in-r-presentation
+<img src="/Users/name/folder/xyz.png"; style="max-width:280px;float:right;">
+
+<center>
+
+<img src="Images/Nick Wells on Mt Hood.jpeg" width="200" height="200" />
+
+</center>
+
+The 'imager' package makes this pretty easy:
+
+library(imager)
+myimg <- load.image("<pathto>/file.png")
+plot(myimg)
+
+
+# Tables
+Data Table for Baltimore Poverty:
+
+install.packages("DT")
+library(DT)
+balt_poverty %>% 
+  select(csa2010, hhchpov14, hhchpov20,diff_2014_2020, Decrease_Increase, Maryland_Compare) %>% 
+  datatable(options = list(
+  autoWidth = TRUE,
+  columnDefs = list(list(width = '10px', targets = c(1, 2)))
+))
+
+### kableExtra
+library(kableExtra)
+Top5 %>%
+  kable(format = "html") %>%
+  kable_styling("striped")
+  
+nice_table(tolnay_counts, short = TRUE)
+https://cran.r-project.org/web/packages/rempsyc/vignettes/table.html
+
+
+Formatting
+tolnay_counts %>%
+  arrange(desc(n)) %>% 
+  kbl(caption = "Lynching Totals, Tolnay & Beck, 2022", font_size = 30) %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>% 
+  column_spec(1, bold = T, border_right = T) %>%
+  column_spec(2, width = "5em", background = "yellow") 
+
+
+
+kbl(text_tbl) %>%
+  kable_paper(full_width = F) %>%
+  column_spec(1, bold = T, border_right = T) %>%
+  column_spec(2, width = "30em", background = "yellow")
+
+
+https://haozhu233.github.io/kableExtra/awesome_table_in_html.html#Column__Row_Specification
+install.packages("kableExtra")
+library(kableExtra)
+ This makes kables
+total %>% 
+  kable() %>%
+  kable_styling("striped")
+Export
+
+https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html
+
+
+## Additional Resources
+Find more resources to enhance your R skills.
+
+R Cheatsheets: https://posit.co/resources/cheatsheets/
+MaryJo Webster Tutorials: https://sites.google.com/view/mj-basic-data-academy/home
+Aldhous' R Tutorial: http://paldhous.github.io/NICAR/2018/r-analysis.html
+Simply Statistics Blog: https://simplystatistics.org/
+
+
+And for general R programming:
+
+Base R Cheat Sheet: https://www.povertyactionlab.org/sites/default/files/r-cheat-sheet.pdf
+R Documentation: http://www.r-project.org/
+R for Beginners: Transition from Excel to R: https://trendct.org/2015/06/12/r-for-beginners-how-to-transition-from-excel-to-r/
+Programming Historian: Basic Text Processing in R: https://programminghistorian.org/en/lessons/basic-text-processing-in-r
+
+Formatting ggplot
+http://www.sthda.com/english/wiki/ggplot2-axis-ticks-a-guide-to-customize-tick-marks-and-labels
+
+https://tutorials.quanteda.io/basic-operations/
+  
+  https://www.oreilly.com/library/view/practical-text-mining/9780123869791/xhtml/CHP008.html
+
+For later
+https://www3.nd.edu/~steve/computing_with_data/19_strings_and_text/strings_and_text.html#/23
+
+More text mining
+https://www.hackerearth.com/practice/machine-learning/advanced-techniques/text-mining-feature-engineering-r/tutorial/
+  
+  For later
+https://programminghistorian.org/en/lessons/basic-text-processing-in-r
+
+https://stackoverflow.com/questions/49173770/find-occurrences-of-huge-list-of-phrases-in-text
+
+
+http://www.endmemo.com/program/R/grepl.php
+
+Regular expressions
+https://www.hackerearth.com/practice/machine-learning/advanced-techniques/regular-expressions-string-manipulation-r/tutorial/
+  
+  —reviewed R for Data Science
+https://r4ds.had.co.nz/transform.html
+to ch 5
+
+—Sentiment analysis book
+https://towardsdatascience.com/sentiment-analysis-in-r-good-vs-not-good-handling-negations-2404ec9ff2ae
+
+—Intro to tidy text mining
+https://medium.com/inside-socialcops/an-introduction-to-tidy-text-mining-49133697f61f
+
+Tidy Data techniques
+https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html
+
+Andrew Ba Tran first Data Analysis Steps Using R
+https://docs.google.com/presentation/d/1O0eFLypJLP-PAC63Ghq2QURAnhFo6Dxc7nGt4y_l90s/edit#slide=id.p
+
+
+Tirelli handout
+http://r4ds.had.co.nz/data-visualisation.html
+
+http://www.r-project.org
+http://www.johndcook.com
+http://bostondatacommunity.org/onlinecourses/
+http://www.computerworld.com/article/2497143/business-intelligence/business-intelligence-beginner-s-guide-to-r-introduction.html
