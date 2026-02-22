@@ -1,0 +1,52 @@
+---
+title: "OpenRefine Demo"
+author: "Wells"
+date: "2025-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load 'r up!
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+
+#Import data
+
+www.yellkey.com/risk 
+
+```{r}
+media <- read_csv("https://raw.githubusercontent.com/profrobwells/Guest_Lectures/refs/heads/master/Intro_to_R_2024/RealMediaSalaries.csv") |> 
+  clean_names()
+
+```
+```{r}
+media |> 
+  count(company) |> 
+  arrange(desc(n))
+
+
+```
+
+# Go to Open Refine, clean the data
+
+# Import clean data
+```{r}
+
+media2 <- read_csv("RealMediaSalaries_cleaned.csv") |> 
+  clean_names()
+
+
+
+```
+```{r}
+media2 |> 
+  count(cleaned_company) |> 
+  arrange(desc(n))
+```
+ 
