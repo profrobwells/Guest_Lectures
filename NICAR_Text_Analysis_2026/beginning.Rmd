@@ -1,0 +1,205 @@
+---
+title: "beginning"
+author: "Wells"
+date: "2026-02-22"
+output: html_document
+---
+
+
+###----------------------------------------------------###
+
+# Starting Your Own Project: See beginning.rmd
+
+###----------------------------------------------------###
+
+If you are starting from scratch
+Get your files into a folder, one article per file, and in raw .txt
+
+```{r}
+#text obtained with a web scraper
+files <- list.files("./kamala_extracted_text", pattern="*.txt") |> 
+  as.data.frame() |> 
+  rename(filename = 1) |> 
+  mutate(name = str_replace_all(filename, ".txt", "")) |> 
+  mutate(name = str_replace_all(tolower(name), " ", "_")) |> 
+  mutate(name = str_replace_all(name, "[[:punct:]]", "")) |> 
+  arrange((name)) |> 
+  mutate(index = row_number())
+         
+          
+ #  #create an index with the file name
+ # mutate(index = str_extract(filename, "\\d+")) |> 
+ #  mutate(index = as.numeric(index))
+
+kharris_index <- rio::import("./assets/DW_Kamala_Articles.xlsx") |> 
+  mutate(name = str_replace_all(tolower(NAME), " ", "_")) |> 
+  mutate(name = str_replace_all(name, "[[:punct:]]", "")) |> 
+  arrange((name)) |> 
+  mutate(index = row_number()) |> 
+  distinct(name, .keep_all = TRUE) |> 
+  mutate(DATE = case_when(
+    str_detect(as.character(DATE), "2023-11-04") ~ as_datetime("2024-11-04"),
+    TRUE ~ DATE
+    ))
+```
+
+```{r}
+final_index <- files |> 
+  inner_join(kharris_index, by=c("name")) |> 
+  mutate(filepath = paste0("./kamala_extracted_text/", filename)) |> 
+  janitor::clean_names() |> 
+  rename(index = index_x) |> 
+  distinct(index, .keep_all = TRUE) |> 
+  select(index, date,filename,url, filepath, filename)
+
+#fact check
+anti <- files |> 
+  anti_join(kharris_index, by=c("name"))
+
+```
+
+#### Compile text into a single dataframe
+
+```{r include=FALSE, echo=FALSE}
+###
+# Define function to loop through each text file 
+###
+
+create_article_text <- function(row_value) {
+  
+  #row_value is the single argument that is passed to the function
+  # Take each row of the dataframe
+  temp <- final_index |>
+    slice(row_value)
+  
+  # Store the filename for  use in constructing articles dataframe
+  temp_filename <- temp$filename
+  
+  # Create a dataframe by reading in lines of a given textfile
+  # Add a filename column 
+  articles_df_temp <- read_lines(temp$filepath) |>
+    as_tibble() |>
+    mutate(filename = temp_filename)
+  
+  # Bind results to master articles_df
+  # <<- returns to global environment
+  articles_df <<- articles_df |>
+    bind_rows(articles_df_temp)
+}
+
+###
+# Create elements needed to run function
+###
+
+# Create empty tibble to store results
+articles_df <- tibble()
+#running once to test
+#create_article_text(2) 
+# Create an array of numbers to loop through, from 1 to the number of rows in our index dataframe 
+row_values <- 1:nrow(final_index)
+
+###
+# Execute function using lapply
+# This loops through each row of the dataframe and append results to master file
+###
+
+lapply(row_values, create_article_text)
+###
+# Clean up articles_df and join to index dataframe
+###
+
+articles_df <- articles_df |>
+  select(filename, sentence=value) |>
+  inner_join(final_index)
+
+```
+
+#### Clean data
+
+```{r}
+phrases <- c("Date:" = "", 
+            "Article Text:" = "",
+            "Headline:" = "",
+            "Already have an account?" = "", 
+            "Your information could be the missing piece to an important story. Submit your tip today and make a difference." = "",
+            "Stay up-to-date on the latestnews, podcasts, and more." = "",
+  "https" = "")
+
+
+harris_articles_df <- articles_df |> 
+   mutate(sentence = str_replace_all(sentence, phrases))
+
+#write.csv(harris_articles_df, "kharris_extracted_text_jan2025.csv")
+```
+
+<br> 
+
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Background Content
+:::   
+
+
+
+
+
+# cut
+
+data cleaning that we wont discuss. keeping in case I need to redo 
+
+
+
+
+
+#baltimore_collapsed <- baltimore |>
+  # 1. Group by all metadata columns to preserve them
+  group_by(
+    filename, title, published_date, publication_location, 
+    publication_4, length, section, 
+    word_count, byline, headline, 
+    index, filepath
+  ) |> 
+  
+  # 2. Identify the boundaries of the actual article body
+  # Start: row after "Body"
+  # End: row before "Classification Language:"
+  filter({
+    body_start <- which(grepl("^Body", sentence, ignore.case = TRUE))
+    class_end  <- which(grepl("^Language:", sentence, ignore.case = TRUE))
+    
+    # Logic: 
+    # If "Body" exists, start after it; otherwise start at row 1.
+    # If "Classification" exists, end before it; otherwise end at the last row.
+    start_idx <- if(length(body_start) > 0) min(body_start) + 1 else 1
+    end_idx   <- if(length(class_end) > 0) min(class_end) - 1 else n()
+    
+    row_number() >= start_idx & row_number() <= end_idx
+  }) |>
+  
+  # 3. Collapse the remaining sentences into the 'text' column
+  summarise(
+    text = paste(sentence[!is.na(sentence)], collapse = " "), 
+    .groups = "drop"
+  )
+
+# Preview result
+head(baltimore_collapsed)
+
+#write_csv(baltimore_collapsed, "assets/bmore_new.csv")
+
+
+
+baltimore <- read_csv("assets/bmore.csv")
+Fix dates
+
+library(zoo)
+baltimore <- baltimore |> 
+  mutate(yearmo = as.yearmon(date))
+
+baltimore <- baltimore |> 
+  select(date, title, text, yearmo, everything())
+
+baltimore <- baltimore |> 
+  subset(select = -c(headline))
+
+write_csv(baltimore, "assets/bmore.csv")
+
