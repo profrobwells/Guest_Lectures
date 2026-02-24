@@ -99,7 +99,7 @@ baltimore <- read_csv ("assets/bmore.csv")
 :::
 
 ```{r}
-wrapped_text <- strwrap(as.character(baltimore$text[2]), width = 60)
+wrapped_text <- strwrap(as.character(baltimore$text[5]), width = 60)
 writeLines(wrapped_text, "temp_text.txt")
 #file.edit("temp_text.txt")
 ```
