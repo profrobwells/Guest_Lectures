@@ -1,22 +1,26 @@
 ---
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
-<span style="font-size: 40pt;">From Chaos to Narrative: Using R For Story Discovery in Document Collections</span>  
-
+[From Chaos to Narrative:\
+Using R For Story Discovery in Document Collections]{style="font-size: 40pt;"}
 :::
-<br>  
+
+<br>
 
 ::: {style="text-align: center;font-size: 14pt;"}
-**NICAR 2025**  
-**Time: Thursday, March 5: 5 p.m. to 6 p.m. **  
-**Location: Room 201, BYO computer lab**   
-<span style='font-size: 8pt;'>ver. 2/22/2026.</span>
+**NICAR 2025**\
+**Time: Thursday, March 5: 5 p.m. to 6 p.m.**\
+**Location: Room 201, BYO computer lab**\
+[ver. 2/22/2026.]{style="font-size: 8pt;"}
 :::
 
-
-> This hands-on session will show how to analyze a large batch of files to find common themes and narratives. We will use R and the Tidytext package to explore common words, analyze sentiment, and then the Quanteda package to examine keywords in the story context.
+> This hands-on session will show how to analyze a large batch of files to find common themes and narratives.
+> We will use R and the Tidytext package to explore common words, analyze sentiment, and then the Quanteda package to examine keywords in the story context.
 >
 > This code demonstrates text processing, data cleaning and the creation of bigrams and sentiment analysis from news coverage of lynching.
 
@@ -24,15 +28,13 @@ output: html_document
 <img src="assets\merrill-logo-dark.png" width="450" height="75"/>
 :::
 
-<br> 
-
+<br>
 
 ::: {style="text-align: center;"}
 **Rob Wells, Ph.D.**\
 Philip Merrill College of Journalism, University of Maryland.\
 [robwells\@umd.edu](mailto:robwells@umd.edu){.email} \| <a href="https://www.linkedin.com/in/rob-wells-7929329/">LinkedIn</a>.\
 :::
-
 
 ::: {style="text-align: center;"}
 **Tiasia Saunders**\
@@ -44,7 +46,6 @@ Philip Merrill College of Journalism, University of Maryland.\
 **Credits:**
 
 -   Julia Silge & David Robinson, [Text Mining with R](https://www.tidytextmining.com/)
-
 
 ## Load software
 
@@ -74,14 +75,20 @@ library(spacyr)
 library(zoo)
 ```
 
-# Printing Hate data work
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Printing Hate PRECEDENT
+:::
+
+
+# ROB FILLS IN 
+URL
+IMAGE
+
 --led to this workflow that I now teach as a masters and doctoral seminar
 
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Load & process raw text
-:::    
-
-
+:::
 
 ```{r message=FALSE, warning=FALSE}
 baltimore <- read_csv ("assets/bmore.csv") 
@@ -89,7 +96,7 @@ baltimore <- read_csv ("assets/bmore.csv")
 
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Quick view of any entry by row
-:::    
+:::
 
 ```{r}
 wrapped_text <- strwrap(as.character(baltimore$text[2]), width = 60)
@@ -98,8 +105,7 @@ writeLines(wrapped_text, "temp_text.txt")
 ```
 
 We now have 81 articles, one row per article, with relevant metadata.
-But the cleaning is not over
-Check to see if we standardize the publication names
+But the cleaning is not over Check to see if we standardize the publication names
 
 ```{r}
 baltimore |> 
@@ -107,19 +113,15 @@ baltimore |>
   arrange(desc(n))
 ```
 
-
-
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Graph article distribution by month
-:::    
-
+:::
 
 ```{r message=FALSE, warning=FALSE}
 # library(zoo)
 baltimore <- baltimore |>
   mutate(yearmo = as.yearmon(date))
 ```
-
 
 ```{r}
 baltimore |> 
@@ -134,11 +136,9 @@ ggplot(aes(x = factor(months), y = total, fill = total)) +
        y = "")
 ```
 
-
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Bigrams
-:::    
-
+:::
 
 ```{r}
 
@@ -158,6 +158,7 @@ bigrams
 ```
 
 ### Top 20 bigrams
+
 ```{r}
 
 top_20_bigrams <- bigrams |> 
@@ -167,6 +168,7 @@ top_20_bigrams <- bigrams |>
 
 top_20_bigrams
 ```
+
 ## Create a chart
 
 ```{r}
@@ -180,12 +182,12 @@ ggplot(top_20_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
        y = "Count of terms")
 ```
 
-
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Sentiment analysis
 :::
 
 ## Basic
+
 ```{r}
 # load sentiment dictionary
 afinn <- get_sentiments("afinn")
@@ -214,6 +216,7 @@ sentiment_analysis <- sentiment_analysis |>
 ```
 
 ## Sentiment By Month
+
 ```{r}
 # load sentiment dictionary
 afinn <- get_sentiments("afinn")
@@ -238,7 +241,8 @@ sentiment_analysis <- sentiment_tokens |>
   mutate(sentiment_type = ifelse(sentiment >= 0, "Positive", "Negative"))
 ```
 
-## Sentiment by month, "per article" 
+## Sentiment by month, "per article"
+
 ```{r}
 # Sentiment analysis aggregated by month with "per article" normalization
 sentiment_per_article <- sentiment_tokens |>
@@ -257,9 +261,8 @@ sentiment_per_article <- sentiment_tokens |>
 print(sentiment_per_article)
 ```
 
-
-
 ## Chart sentiment by article
+
 ```{r}
 
 ggplot(sentiment_per_article, aes(x = factor(yearmo), y = sentiment_per_article, fill = sentiment_per_article)) +
@@ -280,7 +283,7 @@ ggplot(sentiment_per_article, aes(x = factor(yearmo), y = sentiment_per_article,
   )
 ```
 
-#### Examine Top Negative Phrases
+## Examine Top Negative Phrases
 
 ```{r}
 
@@ -319,9 +322,11 @@ negative_bigrams <- baltimore |>
 negative_bigrams |> head(20)
 ```
 
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Speech Parsing
+:::
 
 
-# Speech Parsing 
 It uses the [udpipe](https://cran.r-project.org/web/packages/udpipe/index.html) package in R:
 
 Tokenization, Parts of Speech Tagging, Lemmatization and Dependency Parsing with the 'UDPipe' 'NLP' Toolkit.
@@ -329,8 +334,8 @@ This natural language processing toolkit provides language-agnostic 'tokenizatio
 
 This code loads an English language model to permit tagging of parts of speech.
 This version only deals with adjectives.
-It then counts all adjectives across all articles and then counts adjectives by article. Credit to Claude.ai for providing the basis of this code.
-
+It then counts all adjectives across all articles and then counts adjectives by article.
+Credit to Claude.ai for providing the basis of this code.
 
 ### Load English language model
 
@@ -339,7 +344,7 @@ udmodel <- udpipe_download_model(language = "english")
 udmodel <- udpipe_load_model(udmodel$file_model)
 ```
 
-### Annotate parts of speech on articles
+## Annotate parts of speech on articles
 
 ```{r}
 # Then run your annotation
@@ -350,9 +355,6 @@ annotated_text <- udpipe_annotate(udmodel,
                                    tagger = "default")
 annotated_df <- as.data.frame(annotated_text)
 ```
-
-
-
 
 The annotated_df columns follow a "CoNLL-U" format for annotated linguistic data in Universal Dependencies.
 It permits analysis of grammatical and syntactic structure of text.
@@ -371,8 +373,7 @@ Breaking down the details in an annotated dataframe from UDPipe:
 
 -   token: The actual word or punctuation mark.
 
--   lemma: The base or dictionary form of the token (e.g., "running" → "run").
-    \
+-   lemma: The base or dictionary form of the token (e.g., "running" → "run").\
     upos: Universal Part of Speech tag - a standardized grammatical category (e.g., NOUN, VERB, ADJ).
 
 -   xpos: Language-specific part of speech tag - more detailed than upos, varies by language.
@@ -388,12 +389,10 @@ Breaking down the details in an annotated dataframe from UDPipe:
 
 Learn more about [Universal Dependencies format](https://universaldependencies.org/format.html)
 
-
-
 A nerdy paper about this process [Tokenizing, POS Tagging, Lemmatizing and Parsing UD 2.0 with UDPipe](https://ufal.mff.cuni.cz/~straka/papers/2017-conll_udpipe.pdf)
 
-
 ## Count adjectives
+
 ```{r}
 # Filter for adjectives (upos = "ADJ") and count frequencies
 adjective_counts <- annotated_df |>
@@ -414,15 +413,20 @@ datatable(adjective_counts,
 
 ```
 
-Interesting results:
---violent is #3, appears 101 times in 40 articles. Is this racialized?
---criminal is #4, appears 79 times in 28 articles. 
---illegal is #16, appears 35 times in 16 articles. Is this a focus on "illegal activity" or "illegal behavior"? Or "illegal drugs"?
---safer is #21, appears 27 times in 15 articles. Is this a focus on "safer communities" or "safer neighborhoods"? Or "safer streets"?
+Interesting results: --violent is #3, appears 101 times in 40 articles.
+Is this racialized?
+--criminal is #4, appears 79 times in 28 articles.
+--illegal is #16, appears 35 times in 16 articles.
+Is this a focus on "illegal activity" or "illegal behavior"?
+Or "illegal drugs"?
+--safer is #21, appears 27 times in 15 articles.
+Is this a focus on "safer communities" or "safer neighborhoods"?
+Or "safer streets"?
 
-# Extract adjective-noun pairs
+## Extract adjective-noun pairs
 
-This section extracts adjective-noun pairs where the adjective directly modifies the noun. It then tabulates the pairs by frequency and by article.
+This section extracts adjective-noun pairs where the adjective directly modifies the noun.
+It then tabulates the pairs by frequency and by article.
 
 ```{r message=FALSE, warning=FALSE}
 adj_noun_pairs <- annotated_df |>
@@ -454,7 +458,6 @@ adj_noun_counts <- adj_noun_pairs |>
   arrange(desc(frequency))
 ```
 
-
 ```{r}
 datatable(adj_noun_counts,
           caption = "Top adjectives-noun pairs in Baltimore coverage",
@@ -462,15 +465,13 @@ datatable(adj_noun_counts,
 
 ```
 
+Interesting results --violent crime, #1, 37 times in 22 articles --young people, #13, 9 times in 6 articles --public safety, #4, 21 times in 12 articles --ghost guns, #16, 8 times in 5 articles
 
-Interesting results
---violent crime, #1, 37 times in 22 articles
---young people, #13, 9 times in 6 articles
---public safety, #4, 21 times in 12 articles
---ghost guns, #16, 8 times in 5 articles
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Spacy parsing
+:::
 
 
-## Spacy parsing
 ```{r}
 
 # Initialize spacy (one-time setup required: spacy_install())
@@ -494,9 +495,10 @@ parsed <- spacy_parse(text, entity = TRUE,
 
 ```
 
-
 ### Spacy Adjective-noun pairs
+
 using a much narrower corpus of the kwic text that is fitered to 30 tokens
+
 ```{r}
 
 # Create adjective-noun pairs using spaCy output
@@ -536,16 +538,13 @@ datatable(spacy_adj_noun_counts,
           options = list(pageLength = 10))
 ```
 
-
-
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Examine Keywords, Phrases in Context
-:::   
+:::
 
 <br>
 
 Process Text Corpus Object
-
 
 ```{r}
 # Create a unique document ID for each article
@@ -561,7 +560,7 @@ my_corpus <- corpus(baltimore, text_field = "text")
 docvars(my_corpus)$yearmo <- baltimore$yearmo
 ```
 
-#### Search for the term "media"
+## Search for the term "media"
 
 ```{r}
 # Tokenize corpus
@@ -572,10 +571,7 @@ kwic_media <- kwic(my_tokens, pattern = "media", valuetype = "fixed") |>
   as.data.frame() |>
   mutate(doc_id = docname)
 
-kwic_media
 ```
-
-
 
 #### Search Journalism Terms
 
@@ -586,7 +582,6 @@ media_narratives <- kwic(my_tokens,
   as.data.frame() |>
   mutate(doc_id = docname)
 
-media_narratives
 ```
 
 ```{r}
@@ -609,12 +604,10 @@ datatable(media_narratives_table,
 
 ###----------------------------------------------------###
 
-
-<br>    
-
+<br>
 
 ::: {style="text-align: center;"}
-**Questions?**   
+**Questions?**\
 **Rob Wells, Ph.D.**\
 Philip Merrill College of Journalism, University of Maryland.\
 [robwells\@umd.edu](mailto:robwells@umd.edu){.email} \| <a href="https://www.linkedin.com/in/rob-wells-7929329/">LinkedIn</a>.\
@@ -626,4 +619,3 @@ Fellow, Howard Center for Investigative Journalism.\
 Philip Merrill College of Journalism, University of Maryland.\
 [tiasias3\@umd.edu](mailto:tiasias3@umd.edu){.email} \| <a href="https://www.linkedin.com/in/tiasia-saunders-1494671b5/">LinkedIn</a>.\
 :::
-
