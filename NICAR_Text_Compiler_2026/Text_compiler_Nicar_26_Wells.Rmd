@@ -1,20 +1,25 @@
 ---
-title: "Text Compiler Example"
+title: "Text Compiler"
 author: "Rob Wells"
-date: "2025-02-26-2025"
+date: "2026-02-24"
 output: html_document
 ---
 
-#Jour 689: This code, largely written by the famous **Sean Mussenden**, takes separate text files and compiles them into a single dataframe for analysis.
+With this notebook, we will take separate text files and compile them into a single dataframe for analysis.
+
+
+Many thanks to the famous **Sean Mussenden** for getting me started with this project.
+
+Steps:
 
 1)  Create a folder Week5_Text_Compiler
 2)  Copy your spreadsheet index and the folder of text files into Week5_Text_Compiler
 3)  Create an .Rproj file for Week5_Text_Compiler
 
 ```{r}
+#install.packages("striprtf")
 library(tidyverse)
 library(janitor)
-#install.packages("striprtf")
 library(striprtf)
 
 ```
