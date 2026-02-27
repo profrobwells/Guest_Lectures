@@ -5,37 +5,111 @@ date: "2026-02-24"
 output: html_document
 ---
 
-With this notebook, we will take separate text files and compile them into a single dataframe for analysis.
 
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+[How to get a pile of documents processed for machine learning]{style="font-size: 40pt;"}
+:::
 
-Many thanks to the famous **Sean Mussenden** for getting me started with this project.
+<br>
 
-Steps:
+::: {style="text-align: center;font-size: 14pt;"}
+**NICAR 2025**\
+**Time: Saturday, March 7: 10:15 a.m.-11:15 a.m.**\
+**Location: Room 205, Mac lab**\
+[ver. 2/22/2026.]{style="font-size: 8pt;"}
+:::
 
-1)  Create a folder Week5_Text_Compiler
-2)  Copy your spreadsheet index and the folder of text files into Week5_Text_Compiler
-3)  Create an .Rproj file for Week5_Text_Compiler
+> Ever wanted to use software to analyze a stack of PDFs or Word documents but you don't know how to start? This session is for you.
+> Using R, I will walk through the process of processing dozens of PDF documents into machine-readable text. Setting this up correctly saves you time but expands the analytical opportunities down the road. 
+> We will then walk through a quick tour of common text analysis strategies.
+> This session is for adventurous beginners and people who can open R, load data and not freak out.
+::: {style="text-align: center;"}
+<img src="assets\merrill-logo-dark.png" width="450" height="75"/>
+:::
 
-```{r}
-#install.packages("striprtf")
+<br>
+
+::: {style="text-align: center;"}
+**Rob Wells, Ph.D.**\
+Philip Merrill College of Journalism, University of Maryland.\
+[robwells\@umd.edu](mailto:robwells@umd.edu){.email} \| <a href="https://www.linkedin.com/in/rob-wells-7929329/">LinkedIn</a>.\
+:::
+
+::: {style="text-align: center;"}
+**Coach: Aidan Hughes**\
+Data Journalist, Howard Center for Investigative Journalism.\
+Philip Merrill College of Journalism, University of Maryland.\
+[athughes\@umd.edu](mailto:athughes@umd.edu){.email} \| <a href="https://www.linkedin.com/in/tiasia-saunders-1494671b5/">LinkedIn</a>.\
+:::
+
+**Credits:**
+
+-   Sean Mussenden, interim director, <a href="https://merrill.umd.edu/howard-center-for-investigative-journalism/">Howard Center for Investigative Journalism</a>.\
+
+## Load software
+
+```{r message=FALSE, warning=FALSE}
+#Install packages if you don't have them already
+# install.packages("tidyverse")
+# install.packages("tidytext")
+# install.packages("quanteda")
+# install.packages("readtext")
+# install.packages("DT")
+# install.packages("rio")
+# install.packages("lubridate")
+# install.packages("zoo")
+#install.packages("pdftools")
 library(tidyverse)
+library(pdftools)
 library(janitor)
 library(striprtf)
+library(tidytext) 
+library(quanteda)
+library(readtext)
+library(DT)
+library(lubridate)
+library(rio)
+library(zoo)
+
 
 ```
 
-# Reformat .RTF files
+# Data transformation #1: rich text files
+
+
+We're going to take a folder of text files and compile them into a single dataframe for analysis.
+
+We are working with a folder full of news articles about a particular journalist. I downloaded them from NexisUni, a common news database widely used by colleges and newsrooms that are not on a starvation budget.
+
+The search of "Raymond Moley" and atleast2(Moley) returned 87 rich text file (.rtf) documents. We downloaded the individual files and then separately downloaded a spreadsheet with the metadata of the files. We'll attach the metadata to the downloaded files. 
+
+First step, we have to please the R gods by converting the .rtf files into .txt files.
+
+Do not anger the R gods!
+
+
+Steps:
+
+1)  Create a folder Text_Compiler
+2)  And inside that folder, create an input folder and an output folder
+3)  Copy your spreadsheet index and the folder of text files into Text_Compiler folder
+4)  Create an .Rproj file for Text_Compiler
+
+The 87 news articles are in a folder called input.
+
+## Reformat .RTF files to raw text
+
+**This chunk reads each individual .rtf file, processes it in a loop and transforms it to a .txt raw text file
 
 ```{r}
 # Load required packages
 
 # Set the paths for your folders
-input_folder <- "./Files_rtf/"  # Replace with your input folder path
-output_folder <- "./file_raw_text/" # Replace with your output folder path
+input_folder <- "./input/"  # Replace with your input folder path
+output_folder <- "./output/" # Replace with your output folder path
 
 # Create output folder if it doesn't exist
 if (!dir.exists(output_folder)) {
-  dir.create(output_folder)
 }
 
 # Get a list of all .rtf files in the input folder
@@ -59,8 +133,13 @@ for (file in rtf_files) {
   cat("Converted:", file, "to", output_file, "\n")
 }
 
-cat("Conversion complete!\n")
+cat("Conversion complete! You're a genius!\n")
 ```
+
+
+**Next, we take all of those text files and jam them into a dataframe**
+> This is a very big deal
+> It allows you to perform advanced text analytics on the news stories
 
 # Raw text compiler
 
@@ -75,7 +154,7 @@ cat("Conversion complete!\n")
 ###
 
 #Adjust thisline for your file name
-files <- list.files("./file_raw_text", pattern="*.txt") %>% 
+files <- list.files("./output", pattern="*.txt") %>% 
   as.data.frame() |> 
   rename(filename = 1) |> 
   #create an matching file name
@@ -84,12 +163,39 @@ files <- list.files("./file_raw_text", pattern="*.txt") %>%
   mutate(index = tolower(index)) |> 
   mutate(index = str_sub(index, 1, 25)) |> 
   distinct(index, .keep_all = TRUE)
+```
+
+## Check for duplicates
 
 
+```{r}
+dupe_data <- rio::import("nexis_search_results_list.xlsx") |> 
+  clean_names() |> 
+   #create an matching file name
+  mutate(index = tolower(gsub("[[:punct:][:space:]|]", "", title))) |> 
+  mutate(index = tolower(index)) |> 
+  mutate(index = str_sub(index, 1, 25)) |> 
+  count(title) |> 
+  arrange(desc(n))
+  
+```
+
+## Zap duplicates 
+
+> Article count drops from 87 to 68
+
+```{r}
 #Join the file list to the index
 
-final_data <- rio::import("Results list for__raymond moley_ and atleast2(Moley).XLSX") |> 
+final_data <- rio::import("nexis_search_results_list.xlsx", 
+                          setclass = "tibble",
+                          col_types = "text") |> 
   clean_names() |> 
+  mutate(published_date = case_when(
+    str_detect(published_date, "^[0-9]+$") ~ as.character(excel_numeric_to_date(as.numeric(published_date))),
+    TRUE ~ published_date
+  )) |>
+  ungroup() |> 
    #create an matching file name
   mutate(index = tolower(gsub("[[:punct:][:space:]|]", "", title))) |> 
   mutate(index = tolower(index)) |> 
@@ -103,39 +209,25 @@ final_data <- rio::import("Results list for__raymond moley_ and atleast2(Moley).
 
 final_data |> 
   count(title) |> 
-  arrange(desc(n))
+  arrange(desc(n)) |> 
+  filter(n > 1)
 ```
 
-# why did it drop from 90 to 68?
+## Final index
 
-```{r}
-dupe_data <- rio::import("Results list for__raymond moley_ and atleast2(Moley).XLSX") |> 
-  clean_names() |> 
-   #create an matching file name
-  mutate(index = tolower(gsub("[[:punct:][:space:]|]", "", title))) |> 
-  mutate(index = tolower(index)) |> 
-  mutate(index = str_sub(index, 1, 25))
-```
-```{r}
-dupe_data |> 
-  count(title) |> 
-  arrange(desc(n))
-```
-
-
-
+> We add the file path for our processed text to permit compiling
 
 ```{r}
 
 final_index <- final_data |> 
   inner_join(files, c("index")) |> 
 #you need the actual hard-coded path on this line below to the text
-  mutate(filepath = paste0("./file_raw_text/", filename))
+  mutate(filepath = paste0("./output/", filename))
 
 head(final_index)
 ```
 
-#Fact Check
+**Duplicate check **
 
 ```{r}
 
@@ -144,72 +236,236 @@ anti_final_index <- final_data |>
 
 ```
 
-#Checking for duplicates
+
+## Text compiler
+
+> Now we process those articles into a single spreadsheet
+> First version is one row per sentence
+
 
 ```{r}
-final_index |> 
-  count(title) |> 
-  arrange(desc(n))
 
-```
-
-#Text compiler
-
-```{r}
-###
-# Define function to loop through each text file 
-###
-
-create_article_text <- function(row_value) {
-  
-  #row_value is the single argument that is passed to the function
-  # Take each row of the dataframe
-  temp <- final_index %>%
-    slice(row_value)
-  
-  # Store the filename for  use in constructing articles dataframe
-  temp_filename <- temp$filename
-  
-  # Create a dataframe by reading in lines of a given textfile
-  # Add a filename column 
-  articles_df_temp <- read_lines(temp$filepath) %>%
-    as_tibble() %>%
-    mutate(filename = temp_filename)
-  
-  # Bind results to master articles_df
-  # <<- returns to global environment
-  articles_df <<- articles_df %>%
-    bind_rows(articles_df_temp)
-}
 
 ###
-# Create elements needed to run function
+# 1. Execute the function loop (Existing Logic)
 ###
-
-# Create empty tibble to store results
 articles_df <- tibble()
-#running once to test
-#create_article_text(2) 
-# Create an array of numbers to loop through, from 1 to the number of rows in our index dataframe 
 row_values <- 1:nrow(final_index)
 
-###
-# Execute function using lapply
-# This loops through each row of the dataframe and append results to master file
-###
-
+# Note: Keeping your lapply approach as requested
 lapply(row_values, create_article_text)
 
 ###
-# Clean up articles_df and join to index dataframe
+# 2. Join, Collapse, and Clean Dates
 ###
+articles_final <- articles_df %>%
+  select(filename, sentence = value) %>%
+  inner_join(final_index, by = "filename") %>%
+  # Group by filename to collapse sentences
+  group_by(filename) %>%
+  summarize(
+    # Collapse sentences into one block, trimming extra whitespace from empty rows
+    full_text = trimws(paste(sentence, collapse = " ")),
+    # Grab the first entry for every other metadata column
+    across(-sentence, \(x) first(x))
+  ) %>%
+  ungroup() %>%
+  # 3. Fix the mixed Date formats (Numeric vs Text)
+  mutate(published_date = case_when(
+    str_detect(published_date, "^[0-9]+$") ~ as.character(excel_numeric_to_date(as.numeric(published_date))),
+    TRUE ~ published_date
+  )) %>%
+  # 4. Final selection of columns
+  select(filename, published_date, headline, full_text, publication_4, length, section, byline, filepath)
 
-articles_df <- articles_df %>%
-  select(filename, sentence=value) %>%
-  inner_join(final_index)
+# View results
+glimpse(articles_final)
+```
 
 
-# write.csv(articles_df, "../exercises/assets/extracted_text/kemi_df2.csv")
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Quick view of any entry by row
+:::    
 
+```{r}
+wrapped_text <- strwrap(as.character(articles_final$full_text[2]), width = 60)
+writeLines(wrapped_text, "temp_text.txt")
+file.edit("temp_text.txt")
+```
+
+## Clean data
+
+> We saw a lot of metadata at the bottom of the article. We'll strip it out so we have clean text for analysis
+
+```{r}
+
+
+articles_df <- articles_final |>
+  mutate(
+    # 1. Strip everything BEFORE the word "Body"
+    # This looks for "Body" (case insensitive) and removes everything preceding it
+    text_clean = sub("(?i).*?Body\\s+", "", full_text),
+    
+    # 2. Strip everything AFTER the metadata markers
+    # This looks for the first instance of ©, "Classification", or "Load-Date" 
+    # and deletes that and everything following it.
+    text_clean = sub("(?i)(\u00a9|Classification|Load-Date|End of Document).*", "", text_clean),
+    
+    # 3. Final polish: remove any leftover trailing whitespace
+    text_clean = trimws(text_clean)
+  ) |>
+  # Optional: Remove the original messy full_text and keep the clean one
+  select(filename, published_date, headline, text_clean, everything(), -full_text)
+
+# Preview
+head(articles_X$text_clean)
+
+```
+
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Quick view of any entry by row
+:::    
+
+```{r}
+wrapped_text <- strwrap(as.character(articles_df$text_clean[66]), width = 60)
+writeLines(wrapped_text, "temp_text.txt")
+file.edit("temp_text.txt")
+```
+
+
+# Part 2: Stack of PDFs
+
+
+# Convert PDF to text
+
+Using 10 articles downloaded from NexisUni for Kemi Busari's research
+
+```{r}
+#Using pdftools package. Good for basic PDF extraction
+#Oct 17: removed split_file folder in a cleanup
+text <- pdf_text("kemi.PDF")
+#pdf_text reads the text from a PDF file.
+writeLines(text, "./extracted_text/kemi_text.txt")
+#writeLines writes this text to a text file
+```
+
+# Split text to separate articles on common identifier
+
+In this case, NexisUni makes life easy for us. At the end of each document, there are the words "End of Document". Convenient! We search for "End of Document" and then instruct R to split the file and dump it into a standalone text file.
+
+```{r}
+# Step 1: Read the entire text file into R
+#You will need to alter this for your computer
+#For Mac: In Finder, Cntl + click on the filename, NOW hold down Alt/Option, and an item to copy file path will appear as Copy "Filename" as Pathname 
+#https://stackoverflow.com/questions/52695546/how-to-copy-path-of-a-file-in-mac-os
+
+
+file_path <- "./extracted_text/kemi_text.txt"
+text_data <- readLines(file_path)
+
+# Step 2: Combine lines into one single string
+text_combined <- paste(text_data, collapse = "\n")
+
+# Step 3: Split the text by the "End of Document" phrase
+documents <- strsplit(text_combined, "End of Document")[[1]]
+
+# Step 4: Write each section to a new file
+output_dir <- "./extracted_text/"
+for (i in seq_along(documents)) {
+  output_file <- file.path(output_dir, paste0("kemi_extracted_", i, ".txt"))
+  writeLines(documents[[i]], output_file)
+}
+
+cat("Files created:", length(documents), "\n")
+```
+
+# Create an index from the first extracted page
+
+--We are just grabbing the index of the 10 listed items and creating a dataframe
+
+```{r}
+kemi_index <- read_lines("./extracted_text/kemi_extracted_1.txt")
+# Extract lines 16 to 58
+extracted_lines <- kemi_index[16:58]
+
+
+# Print the extracted lines to the console
+cat(extracted_lines, sep = "\n")
+
+extracted_lines <- extracted_lines |> 
+  as.data.frame() 
+
+
+extracted_lines <- extracted_lines |> 
+  mutate(extracted_lines = str_remove(extracted_lines, "\\| About LexisNexis \\| Privacy Policy \\| Terms & Conditions \\| Copyright © 2020 LexisNexis"))
+```
+
+#Build a final dataframe index
+
+```{r}
+# Step 1: Trim spaces and detect rows with titles and dates
+cleaned_data <- extracted_lines |>
+  mutate(
+    # Trim leading and trailing spaces before detection
+    trimmed_line = str_trim(extracted_lines),  
+
+    # Detect titles (start with a number and a period)
+    is_title = str_detect(trimmed_line, "^\\d+\\. "),  
+
+    # Detect dates (e.g., "Aug 14, 2024")
+    is_date = str_detect(trimmed_line, "\\b\\w{3} \\d{1,2}, \\d{4}\\b")
+  )
+
+# Step 2: Shift dates to align with corresponding titles
+aligned_data <- cleaned_data |>
+  mutate(
+    date = ifelse(lead(is_date, 1), lead(trimmed_line, 1), NA_character_)  # Shift date to title's row
+  ) |>
+  filter(is_title) |>
+  select(trimmed_line, date)  # Keep only the relevant columns
+
+# Step 3: Rename columns for clarity
+final_data <- aligned_data |>
+  rename(
+    title = trimmed_line,
+    date = date
+  )
+
+#Step 4: Date and Publication in separate columns, and formatted
+final_data <- separate(data = final_data, col = date, into = c("date2", "publication"), sep = "  ", extra = "merge", fill = "right")
+
+
+#Step 5: Format date, clean headline
+final_data <- final_data |> 
+  mutate(date = as.Date(date2,format = "%b %d, %Y")) |> 
+  mutate(title =str_remove(title, "^\\d+\\. ")) |> 
+  subset(select = -(date2)) |> 
+  mutate(index = row_number()) |> 
+  select(index, date, title, publication)
+
+write_csv(final_data, "final_data.csv")
+  
+```
+
+#Part 2: Complex PDFs
+
+### For more complicated PDFs, bring in the Big Guns
+
+```{r}
+#Install Required Tools
+#Using the system() function to execute a command-line operation directly from within R.
+system("brew install tesseract")
+system("brew install xpdf")
+system("xcode-select --install")
+system("brew install libtiff")
+system("brew install ghostscript")
+system("brew install imagemagick")
+```
+
+#Convert PDF to Text
+
+```{r}
+#Executes pdftotext, a command-line tool used to convert PDF files to plain text.
+system("pdftotext kemi.PDF ./extracted_text/kemi_tesseract.txt")
 ```
 
