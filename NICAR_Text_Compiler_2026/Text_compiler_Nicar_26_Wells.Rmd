@@ -242,43 +242,57 @@ anti_final_index <- final_data |>
 > Now we process those articles into a single spreadsheet
 > First version is one row per sentence
 
-
 ```{r}
 
+# --- STEP 1: Define the function ---
+create_article_text <- function(row_value) {
+  # Get the metadata for the specific row
+  temp <- final_index %>% slice(row_value)
+  temp_filename <- temp$filename
+  
+  # Read the text file and add filename column
+  articles_df_temp <- read_lines(temp$filepath) %>%
+    as_tibble() %>%
+    mutate(filename = temp_filename)
+  
+  # Append to global dataframe
+  articles_df <<- articles_df %>% bind_rows(articles_df_temp)
+}
 
-###
-# 1. Execute the function loop (Existing Logic)
-###
+# --- STEP 2: Run the extraction loop ---
 articles_df <- tibble()
 row_values <- 1:nrow(final_index)
-
-# Note: Keeping your lapply approach as requested
 lapply(row_values, create_article_text)
 
-###
-# 2. Join, Collapse, and Clean Dates
-###
+# --- STEP 3: Join, Collapse, Date Fix, and Text Stripping ---
 articles_final <- articles_df %>%
   select(filename, sentence = value) %>%
   inner_join(final_index, by = "filename") %>%
-  # Group by filename to collapse sentences
   group_by(filename) %>%
   summarize(
-    # Collapse sentences into one block, trimming extra whitespace from empty rows
-    full_text = trimws(paste(sentence, collapse = " ")),
-    # Grab the first entry for every other metadata column
+    # Collapse all sentences into one block
+    full_text = paste(sentence, collapse = " "),
+    # Keep metadata
     across(-sentence, \(x) first(x))
   ) %>%
   ungroup() %>%
-  # 3. Fix the mixed Date formats (Numeric vs Text)
-  mutate(published_date = case_when(
-    str_detect(published_date, "^[0-9]+$") ~ as.character(excel_numeric_to_date(as.numeric(published_date))),
-    TRUE ~ published_date
-  )) %>%
-  # 4. Final selection of columns
+  mutate(
+    # Fix Excel Dates vs String Dates
+    published_date = case_when(
+      str_detect(published_date, "^[0-9]+$") ~ as.character(excel_numeric_to_date(as.numeric(published_date))),
+      TRUE ~ published_date
+    ),
+    # STRIP METADATA:
+    # 1. Remove header (everything before 'Body')
+    full_text = sub("(?i).*?Body\\s+", "", full_text),
+    # 2. Remove footer (everything from Copyright/Classification to end)
+    full_text = sub("(?i)(\u00a9|Classification|Load-Date|End of Document).*", "", full_text),
+    full_text = trimws(full_text)
+  ) %>%
+  # Keep only your required columns
   select(filename, published_date, headline, full_text, publication_4, length, section, byline, filepath)
 
-# View results
+# Check your 68 rows
 glimpse(articles_final)
 ```
 
@@ -304,48 +318,64 @@ articles_df <- articles_final |>
   mutate(
     # 1. Strip everything BEFORE the word "Body"
     # This looks for "Body" (case insensitive) and removes everything preceding it
-    text_clean = sub("(?i).*?Body\\s+", "", full_text),
+    clean_text = sub("(?i).*?Body\\s+", "", full_text),
     
     # 2. Strip everything AFTER the metadata markers
     # This looks for the first instance of ©, "Classification", or "Load-Date" 
     # and deletes that and everything following it.
-    text_clean = sub("(?i)(\u00a9|Classification|Load-Date|End of Document).*", "", text_clean),
+    clean_text = sub("(?i)(\u00a9|Classification|Load-Date|End of Document).*", "", clean_text),
     
     # 3. Final polish: remove any leftover trailing whitespace
-    text_clean = trimws(text_clean)
+    clean_text = trimws(clean_text)
   ) |>
   # Optional: Remove the original messy full_text and keep the clean one
-  select(filename, published_date, headline, text_clean, everything(), -full_text)
+  select(filename, published_date, headline, clean_text, everything(), -full_text) |> 
+  rename(full_text = clean_text)
 
-# Preview
-head(articles_X$text_clean)
+
+
 
 ```
 
+
+## Deal with dates
+```{r}
+
+articles_df <- articles_df %>%
+  mutate(published_date_clean = case_when(
+    # 1. Handle Excel numeric serials first
+    str_detect(published_date, "^[0-9]{5}$") ~ excel_numeric_to_date(as.numeric(published_date)),
+    
+    # 2. Add 'ymd' to the orders to catch 2001-11-01
+    TRUE ~ as_date(parse_date_time(published_date, orders = c("ymd", "mdy", "B d, Y")))
+  )) %>%
+   select(filename, published_date_clean, headline, full_text, everything(), -published_date) |> 
+  rename(date = published_date_clean)
+```
+
+
 ::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
 # Quick view of any entry by row
-:::    
+::: 
 
 ```{r}
-wrapped_text <- strwrap(as.character(articles_df$text_clean[66]), width = 60)
+wrapped_text <- strwrap(as.character(articles_final$full_text[2]), width = 60)
 writeLines(wrapped_text, "temp_text.txt")
 file.edit("temp_text.txt")
 ```
 
+   
+# Extracting text from PDFs
 
-# Part 2: Stack of PDFs
 
-
-# Convert PDF to text
-
-Using 10 articles downloaded from NexisUni for Kemi Busari's research
+> Convert PDF to text
+> Using 10 articles downloaded from NexisUni for Kemi Busari's research
 
 ```{r}
 #Using pdftools package. Good for basic PDF extraction
-#Oct 17: removed split_file folder in a cleanup
-text <- pdf_text("kemi.PDF")
+text <- pdf_text("./input/kemi.PDF")
 #pdf_text reads the text from a PDF file.
-writeLines(text, "./extracted_text/kemi_text.txt")
+writeLines(text, "./output/kemi_text.txt")
 #writeLines writes this text to a text file
 ```
 
@@ -360,7 +390,7 @@ In this case, NexisUni makes life easy for us. At the end of each document, ther
 #https://stackoverflow.com/questions/52695546/how-to-copy-path-of-a-file-in-mac-os
 
 
-file_path <- "./extracted_text/kemi_text.txt"
+file_path <- "./output/kemi_text.txt"
 text_data <- readLines(file_path)
 
 # Step 2: Combine lines into one single string
@@ -370,7 +400,7 @@ text_combined <- paste(text_data, collapse = "\n")
 documents <- strsplit(text_combined, "End of Document")[[1]]
 
 # Step 4: Write each section to a new file
-output_dir <- "./extracted_text/"
+output_dir <- "./pdf_extracted_text/"
 for (i in seq_along(documents)) {
   output_file <- file.path(output_dir, paste0("kemi_extracted_", i, ".txt"))
   writeLines(documents[[i]], output_file)
@@ -384,7 +414,7 @@ cat("Files created:", length(documents), "\n")
 --We are just grabbing the index of the 10 listed items and creating a dataframe
 
 ```{r}
-kemi_index <- read_lines("./extracted_text/kemi_extracted_1.txt")
+kemi_index <- read_lines("./pdf_extracted_text/kemi_extracted_1.txt")
 # Extract lines 16 to 58
 extracted_lines <- kemi_index[16:58]
 
@@ -443,11 +473,14 @@ final_data <- final_data |>
   mutate(index = row_number()) |> 
   select(index, date, title, publication)
 
-write_csv(final_data, "final_data.csv")
+write_csv(final_data, "pdf_final_data.csv")
   
 ```
 
-#Part 2: Complex PDFs
+
+## Repeat sequence above
+Now you have a folder with raw text and a dataframe with metadata. You can now repeat the steps starting from text compiler and build a dataframe with clean text and perform basic computational text analysis
+
 
 ### For more complicated PDFs, bring in the Big Guns
 
@@ -462,10 +495,151 @@ system("brew install ghostscript")
 system("brew install imagemagick")
 ```
 
-#Convert PDF to Text
+## Convert PDF to Text
 
 ```{r}
 #Executes pdftotext, a command-line tool used to convert PDF files to plain text.
 system("pdftotext kemi.PDF ./extracted_text/kemi_tesseract.txt")
+```
+
+
+# Computational Text Analysis
+
+> Now that you have the material in raw text format and in a dataframe, let's start digging in.
+Here's a separate presentation I did Thursday that describes the process in some detail.
+
+https://profrobwells.github.io/Guest_Lectures/NICAR_Text_Analysis_2026/NICAR_Text_analysis_2026.html
+
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Bigrams
+:::
+
+```{r}
+
+bigrams <- articles_df |> 
+  select(full_text) |> 
+  mutate(text = str_squish(full_text)) |> 
+  mutate(text = tolower(text)) |>  
+  mutate(text = str_replace_all(text, "- ", "")) |> 
+  unnest_tokens(bigram, text, token="ngrams", n=2 ) |> 
+  separate(bigram, c("word1", "word2"), sep = " ") |> 
+  filter(!word1 %in% stop_words$word) |>
+  filter(!word2 %in% stop_words$word) |> 
+  count(word1, word2, sort = TRUE) |> 
+  filter(!is.na(word1))
+
+bigrams
+```
+
+### Top 20 bigrams
+
+```{r}
+
+top_20_bigrams <- bigrams |> 
+   top_n(20) |> 
+  mutate(bigram = paste(word1, " ", word2)) |> 
+  select(bigram, n)
+
+top_20_bigrams
+```
+
+## Create a chart
+
+```{r}
+ggplot(top_20_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
+  geom_bar(stat = "identity") +
+  theme(legend.position = "none") +
+  coord_flip() +  
+  labs(title = "Top Two-Word phrases in Moley coverage",
+       caption = "n=68 articles. Graphic by Rob Wells. 3-1-2026",
+       x = "Phrase",
+       y = "Count of terms")
+```
+
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Sentiment analysis
+:::
+
+## Basic
+
+```{r}
+# load sentiment dictionary
+afinn <- get_sentiments("afinn")
+
+#tokenize the dataframe, grouping by article number
+sentiment <- articles_df |> 
+  select(full_text) |> 
+  mutate(article_nmbr = row_number()) |> 
+  mutate(text = str_squish(full_text)) |> 
+  mutate(text = tolower(text)) |>  
+  mutate(text = str_replace_all(text, "- ", "")) |> 
+  group_by(article_nmbr) |> 
+  unnest_tokens(tokens, text) |> 
+  filter(!tokens %in% stop_words$word) 
+
+# Sentiment analysis by joining the tokenized words with the AFINN lexicon
+sentiment_analysis <- sentiment |>
+  inner_join(afinn, by = c("tokens"="word")) |>
+  group_by(article_nmbr) |>  
+  summarize(sentiment = sum(value), .groups = "drop")
+
+# aggregate at article level, total sentiment score (Positive or Negative)
+sentiment_analysis <- sentiment_analysis |>
+   group_by(article_nmbr) |> 
+  mutate(sentiment_type = ifelse(sentiment >= 0, "Positive", "Negative"))
+```
+
+::: {style="text-align: center; color: #FF4500; font-weight: bold;"}
+# Examine Keywords, Phrases in Context
+:::
+
+<br>
+
+Process Text Corpus Object
+
+```{r}
+# Create a unique document ID for each article
+kwic_search <- articles_df |>
+  mutate(doc_id = paste0("article_", row_number()))
+
+
+my_corpus <- corpus(kwic_search, text_field = "full_text")
+
+# Add metadata (optional but useful)
+docvars(my_corpus)$date <- articles_df$date
+```
+
+## Search for the term "media"
+
+```{r}
+# Tokenize corpus
+my_tokens <- tokens(my_corpus)
+
+# KWIC search
+kwic_media <- kwic(my_tokens, pattern = "media", valuetype = "fixed") |> 
+  as.data.frame() |>
+  mutate(doc_id = docname)
+
+```
+
+#### Search Journalism Terms
+
+```{r}
+media_narratives <- kwic(my_tokens, 
+                         pattern = c("media", "reporter", "newspaper", "journalist"), 
+                         valuetype = "fixed") |> 
+  as.data.frame() |>
+  mutate(doc_id = docname)
+
+```
+
+```{r}
+
+media_narratives_table <- media_narratives |> 
+  select(doc_id, pre, keyword, post)
+
+datatable(media_narratives_table,
+          caption = "Journalism Terms in Context",
+          options = list(pageLength = 20))
 ```
 
