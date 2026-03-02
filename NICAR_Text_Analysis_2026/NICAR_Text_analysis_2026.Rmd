@@ -160,7 +160,7 @@ bigrams
 ```{r}
 
 top_20_bigrams <- bigrams |> 
-   top_n(20) |> 
+  top_n(20) |> 
   mutate(bigram = paste(word1, " ", word2)) |> 
   select(bigram, n)
 
